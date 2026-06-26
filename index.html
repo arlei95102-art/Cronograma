@@ -1,0 +1,2910 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Cronograma SES PE</title>
+  <meta name="description" content="Cronograma de estudos SES PE com agenda, progresso e revisões." />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="application-name" content="Cronograma SES" />
+  <meta name="apple-mobile-web-app-title" content="Cronograma SES" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./icons/icon-32.png" />
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --blue: #2563eb;
+      --green-bg: #dcfce7;
+      --green-text: #166534;
+      --yellow-bg: #fef3c7;
+      --yellow-text: #92400e;
+      --blue-bg: #dbeafe;
+      --blue-text: #1d4ed8;
+      --gray-bg: #f3f4f6;
+      --gray-text: #4b5563;
+      --p1: #fee2e2;
+      --p2: #ffedd5;
+      --p3: #ecfccb;
+      --p4: #e0e7ff;
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100svh;
+    }
+    header {
+      position: relative;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      background: rgba(245,247,251,.9);
+      border-bottom: 1px solid rgba(229,231,235,.8);
+    }
+    header.is-compact {
+      position: sticky;
+      top: 0;
+    }
+    .wrap {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 18px 20px 28px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    .subtitle {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: .96rem;
+    }
+    .toolbar {
+      display: grid;
+      grid-template-columns: 2fr repeat(4, minmax(140px, 1fr)) auto auto auto;
+      gap: 10px;
+      margin-top: 16px;
+      align-items: center;
+    }
+    .toolbar input, .toolbar select, .toolbar button {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: .95rem;
+    }
+    .toolbar button {
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .toolbar button.primary {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+    .toolbar button.warn {
+      background: #fff7ed;
+      border-color: #fdba74;
+      color: #9a3412;
+    }
+    
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0 22px;
+    }
+    .inline-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1.4fr .8fr .8fr 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+    .mini-input, .mini-select, .mini-btn {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.95);
+      border-radius: 12px;
+      padding: 9px 10px;
+      font: inherit;
+    }
+    .mini-btn {
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .module-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 4px 14px;
+      flex-wrap: wrap;
+    }
+    .module-tools .hint {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .editable {
+      width: 100%;
+      min-height: 44px;
+      resize: vertical;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      font: inherit;
+      background: rgba(255,255,255,.82);
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      word-break: normal;
+      line-height: 1.35;
+    }
+    .editable.short {
+      min-height: 64px;
+      font-weight: 700;
+      overflow-y: auto;
+    }
+    .editable[data-field="subtopics"] {
+      min-height: 82px;
+    }
+    table th:nth-child(3),
+    table td:nth-child(3) {
+      min-width: 420px;
+      width: 36%;
+    }
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: visible;
+      padding-bottom: 4px;
+      scrollbar-gutter: stable both-edges;
+    }
+    .table-scroll table {
+      min-width: 1680px;
+    }
+    .stats-stack {
+      display: grid;
+      gap: 6px;
+      min-width: 210px;
+    }
+    .stats-stack .line {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: .9rem;
+    }
+    .smart-review {
+      display: grid;
+      gap: 4px;
+      font-size: .89rem;
+      line-height: 1.35;
+    }
+    .smart-badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: .8rem;
+      background: #eef2ff;
+      color: #3730a3;
+      margin-bottom: 8px;
+    }
+    .danger-text { color: #b91c1c; }
+    .good-text { color: #166534; }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      border: 1px solid rgba(229,231,235,.7);
+    }
+    .card .label {
+      color: var(--muted);
+      font-size: .85rem;
+      margin-bottom: 6px;
+    }
+    .card .value {
+      font-size: 1.55rem;
+      font-weight: 800;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: white;
+      border: 1px solid var(--line);
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    .modules {
+      display: grid;
+      gap: 14px;
+    }
+    details.module {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: white;
+      border: 1px solid rgba(229,231,235,.8);
+    }
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px 18px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,1), rgba(249,250,251,1));
+    }
+    summary::-webkit-details-marker { display: none; }
+    .summary-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .module-badge {
+      background: #111827;
+      color: white;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 700;
+      font-size: .9rem;
+    }
+    .module-date {
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .summary-right {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .mini {
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: .85rem;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: white;
+    }
+    .module-body {
+      padding: 0 12px 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+    }
+    th {
+      text-align: left;
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--muted);
+      padding: 0 10px;
+    }
+    td {
+      background: white;
+      padding: 12px 10px;
+      vertical-align: top;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    tr td:first-child {
+      border-left: 1px solid var(--line);
+      border-top-left-radius: 14px;
+      border-bottom-left-radius: 14px;
+    }
+    tr td:last-child {
+      border-right: 1px solid var(--line);
+      border-top-right-radius: 14px;
+      border-bottom-right-radius: 14px;
+    }
+    tr.status-concluido td {
+      background: var(--green-bg);
+      color: var(--green-text);
+      border-color: #bbf7d0;
+    }
+    tr.status-atrasado td {
+      background: var(--yellow-bg);
+      color: var(--yellow-text);
+      border-color: #fde68a;
+    }
+    tr.status-em-andamento td {
+      background: var(--blue-bg);
+      color: var(--blue-text);
+      border-color: #bfdbfe;
+    }
+    tr.status-planejado td {
+      background: white;
+    }
+    .theme {
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .subtopics {
+      color: var(--muted);
+      font-size: .89rem;
+      line-height: 1.35;
+      max-width: 430px;
+    }
+    .area-tag, .priority-tag, .status-tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: .82rem;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .priority-1 { background: var(--p1); }
+    .priority-2 { background: var(--p2); }
+    .priority-3 { background: var(--p3); }
+    .priority-4 { background: var(--p4); }
+    .status-concluido .status-tag { background: #bbf7d0; }
+    .status-atrasado .status-tag { background: #fde68a; }
+    .status-em-andamento .status-tag { background: #bfdbfe; }
+    .status-planejado .status-tag { background: #e5e7eb; }
+    .checkwrap {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      min-width: 210px;
+    }
+    .check {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 999px;
+      background: rgba(255,255,255,.75);
+      user-select: none;
+    }
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #16a34a;
+    }
+    .note {
+      width: 100%;
+      min-height: 56px;
+      resize: vertical;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      font: inherit;
+      background: rgba(255,255,255,.75);
+    }
+    .review-list {
+      font-size: .9rem;
+      line-height: 1.45;
+      min-width: 160px;
+    }
+    .muted {
+      color: var(--muted);
+      font-size: .88rem;
+    }
+    .save-note {
+      font-size: .85rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .hidden { display: none !important; }
+    .footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: .92rem;
+      padding-bottom: max(0px, env(safe-area-inset-bottom));
+    }
+
+    @supports (padding: max(0px)) {
+      header {
+        padding-top: env(safe-area-inset-top);
+      }
+      body {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+      }
+    }
+
+    .import-panel {
+      margin-top: 12px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+    }
+    .import-head,
+    .organizer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .import-title {
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+    .import-subtitle {
+      color: var(--muted);
+      font-size: .86rem;
+    }
+    .import-body {
+      margin-top: 10px;
+    }
+    .import-panel.is-collapsed .import-body {
+      display: none;
+    }
+    .import-panel.is-collapsed {
+      padding-bottom: 12px;
+    }
+    .import-help {
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .import-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr auto auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .import-panel input,
+    .import-panel select,
+    .import-panel button,
+    .import-panel textarea,
+    .organizer-panel input,
+    .organizer-panel button,
+    .organizer-panel select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+    }
+    .import-panel button,
+    .organizer-panel button {
+      cursor: pointer;
+      font-weight: 700;
+      min-height: 42px;
+    }
+    .import-toggle,
+    .organizer-toggle {
+      max-width: 160px;
+      background: #f8fafc !important;
+    }
+    .import-panel textarea {
+      grid-column: 1 / -1;
+      min-height: 88px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .86rem;
+    }
+    .import-status {
+      margin-top: 8px;
+      font-size: .86rem;
+      color: var(--muted);
+    }
+    .organizer-panel {
+      margin: 16px 0 18px;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border: 1px solid rgba(229,231,235,.9);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .organizer-panel.is-collapsed .organizer-body {
+      display: none;
+    }
+    .organizer-title {
+      font-weight: 900;
+      font-size: 1.08rem;
+    }
+    .organizer-subtitle {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-top: 3px;
+    }
+    .organizer-body {
+      margin-top: 14px;
+      display: grid;
+      gap: 14px;
+    }
+    .quick-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .quick-actions button {
+      width: auto;
+      min-height: 38px;
+      padding: 8px 11px;
+      background: white;
+    }
+    .quick-actions button.active {
+      background: #111827;
+      color: white;
+      border-color: #111827;
+    }
+    .org-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .org-card {
+      background: rgba(255,255,255,.95);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      min-height: 130px;
+    }
+    .org-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+    .org-card .label {
+      color: var(--muted);
+      font-size: .84rem;
+      margin-bottom: 6px;
+    }
+    .org-metric {
+      font-weight: 900;
+      font-size: 1.45rem;
+      margin: 4px 0 8px;
+    }
+    .org-list {
+      display: grid;
+      gap: 8px;
+      font-size: .9rem;
+    }
+    .org-list-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 9px 10px;
+      background: #fff;
+    }
+    .org-list-item strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+    .org-list-item button {
+      margin-top: 7px;
+      min-height: 34px;
+      padding: 7px 9px;
+      font-size: .85rem;
+    }
+    .progress-track {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #2563eb;
+      border-radius: 999px;
+      transition: width .2s ease;
+    }
+    .two-buttons {
+      display: grid;
+      gap: 8px;
+    }
+
+    .calendar-panel {
+      margin: 16px 0 18px;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border: 1px solid rgba(229,231,235,.9);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .calendar-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .calendar-title {
+      font-weight: 900;
+      font-size: 1.08rem;
+    }
+    .calendar-subtitle {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-top: 3px;
+    }
+    .calendar-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .calendar-panel button,
+    .calendar-panel input,
+    .calendar-panel select,
+    .calendar-panel textarea {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+    }
+    .calendar-panel button {
+      cursor: pointer;
+      font-weight: 700;
+      min-height: 42px;
+    }
+    .calendar-panel .primary {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+    .calendar-body {
+      display: grid;
+      gap: 14px;
+    }
+    .calendar-panel.is-collapsed .calendar-body {
+      display: none;
+    }
+    .calendar-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
+      gap: 14px;
+      align-items: start;
+    }
+    .calendar-grid-wrap,
+    .day-planner {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.92);
+      padding: 12px;
+    }
+    .calendar-weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .calendar-weekdays {
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      text-align: center;
+    }
+    .calendar-cell {
+      min-height: 116px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+      padding: 8px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 6px;
+      cursor: pointer;
+      outline: none;
+    }
+    .calendar-cell:hover,
+    .calendar-cell:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px rgba(147,197,253,.25);
+    }
+    .calendar-cell.is-outside {
+      background: #f8fafc;
+      color: #94a3b8;
+    }
+    .calendar-cell.is-today {
+      border-color: #2563eb;
+    }
+    .calendar-cell.is-selected {
+      box-shadow: inset 0 0 0 2px #2563eb;
+    }
+    .day-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      font-weight: 900;
+    }
+    .day-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: .78rem;
+      font-weight: 900;
+    }
+    .day-tags {
+      display: grid;
+      gap: 4px;
+      align-content: start;
+    }
+    .calendar-tag,
+    .calendar-task-chip {
+      border-radius: 9px;
+      padding: 5px 7px;
+      font-size: .78rem;
+      line-height: 1.2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+    .calendar-tag {
+      background: #ecfeff;
+      color: #155e75;
+      border-color: #a5f3fc;
+      font-weight: 800;
+    }
+    .calendar-task-chip {
+      background: #f0fdf4;
+      color: #166534;
+      border-color: #bbf7d0;
+      cursor: grab;
+    }
+    .calendar-task-chip.is-done {
+      background: #f3f4f6;
+      color: #6b7280;
+      text-decoration: line-through;
+      border-color: #e5e7eb;
+    }
+    .more-chip {
+      color: var(--muted);
+      font-size: .76rem;
+      padding-left: 2px;
+    }
+    .selected-day-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .selected-day-title {
+      font-weight: 900;
+    }
+    .task-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .task-form .full {
+      grid-column: 1 / -1;
+    }
+    .task-form textarea {
+      min-height: 76px;
+      resize: vertical;
+    }
+    .task-list {
+      display: grid;
+      gap: 8px;
+    }
+    .task-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+    .task-row {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .task-title {
+      font-weight: 900;
+      line-height: 1.25;
+    }
+    .task-meta {
+      color: var(--muted);
+      font-size: .85rem;
+      line-height: 1.35;
+    }
+    .task-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .task-actions button {
+      min-height: 34px;
+      padding: 7px 9px;
+      font-size: .85rem;
+    }
+    .calendar-suggestions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .calendar-suggestion-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+      padding: 12px;
+      min-height: 98px;
+    }
+    .calendar-suggestion-card strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+    @media print {
+      header, .organizer-panel, .calendar-panel, .legend, .module-tools button, .footer { display: none !important; }
+      body { background: white; }
+      .wrap { max-width: none; padding: 0; }
+      details.module { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+      details.module:not([open]) { display: none; }
+      textarea, input, select { border: 0 !important; background: transparent !important; }
+    }
+
+    @media (max-width: 1200px) {
+      .cards { grid-template-columns: repeat(3, 1fr); }
+      .toolbar { grid-template-columns: 1fr 1fr 1fr; }
+      .org-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .calendar-layout { grid-template-columns: 1fr; }
+      .calendar-suggestions { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 780px) {
+      .cards { grid-template-columns: repeat(2, 1fr); }
+      .toolbar { grid-template-columns: 1fr; }
+      .import-grid, .org-grid { grid-template-columns: 1fr; }
+      .org-card { grid-column: auto !important; }
+      .quick-actions button { width: 100%; }
+      .calendar-head { align-items: stretch; }
+      .calendar-actions,
+      .calendar-actions button,
+      .calendar-actions input {
+        width: 100%;
+      }
+      .calendar-weekdays,
+      .calendar-grid {
+        gap: 5px;
+      }
+      .calendar-cell {
+        min-height: 86px;
+        padding: 6px;
+        border-radius: 10px;
+      }
+      .calendar-tag,
+      .calendar-task-chip {
+        font-size: .72rem;
+        padding: 4px 5px;
+      }
+      .task-form {
+        grid-template-columns: 1fr;
+      }
+      .task-form .full {
+        grid-column: auto;
+      }
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { display: none; }
+      td {
+        border-radius: 0 !important;
+        border-left: 1px solid var(--line) !important;
+        border-right: 1px solid var(--line) !important;
+      }
+      tr {
+        margin-bottom: 10px;
+        display: block;
+      }
+      tr td:first-child {
+        border-top-left-radius: 14px !important;
+        border-top-right-radius: 14px !important;
+      }
+      tr td:last-child {
+        border-bottom-left-radius: 14px !important;
+        border-bottom-right-radius: 14px !important;
+      }
+      td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: .78rem;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 4px;
+        letter-spacing: .04em;
+      }
+    }
+
+
+    /* Recursos adicionados: cabeçalho minimizável, painel inicial minimizável e atualização manual */
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .top-actions,
+    .compact-actions,
+    .initial-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .top-actions button,
+    .compact-actions button,
+    .initial-head button {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: .95rem;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .top-actions .primary,
+    .compact-actions .primary {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+    .compact-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,.94);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+      padding: 12px 14px;
+    }
+    .compact-header-title {
+      font-weight: 900;
+      font-size: 1rem;
+    }
+    #headerFullContent.is-collapsed {
+      display: none;
+    }
+    .initial-panel {
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border: 1px solid rgba(229,231,235,.9);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px 16px;
+      margin-bottom: 18px;
+    }
+    .initial-head {
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .initial-title {
+      font-weight: 900;
+      font-size: 1.08rem;
+    }
+    .initial-subtitle {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-top: 3px;
+    }
+    .initial-panel.is-collapsed .initial-body {
+      display: none;
+    }
+    .initial-panel.is-collapsed {
+      padding-bottom: 12px;
+    }
+    .sync-hint {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.35;
+    }
+    @media (max-width: 780px) {
+      .title-row, .compact-header-bar, .initial-head { align-items: stretch; }
+      .top-actions, .compact-actions { width: 100%; }
+      .top-actions button, .compact-actions button, .initial-head button { width: 100%; }
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div id="compactHeaderBar" class="compact-header-bar hidden" aria-label="Cabeçalho compacto do cronograma">
+        <div>
+          <div class="compact-header-title">Árlei Rodrigues | Cronograma residência 2026</div>
+          <div class="sync-hint">Cabeçalho minimizado. Use Atualizar para buscar dados locais, dados embutidos no HTML ou versão sincronizada do arquivo quando disponível.</div>
+        </div>
+        <div class="compact-actions">
+          <button class="primary" id="refreshDataCompact" type="button">Atualizar</button>
+          <button id="toggleHeaderPanelCompact" type="button">Expandir cabeçalho</button>
+        </div>
+      </div>
+      <div id="headerFullContent">
+        <div class="title-row">
+          <div>
+            <h1>Árlei Rodrigues | Cronograma residência 2026</h1>
+            <div class="subtitle">Cronograma editável com progresso preservado, estatísticas de questões em tempo real, revisões inteligentes por desempenho e espaço extra por módulo.</div>
+            <div class="sync-hint">O botão Atualizar busca dados salvos neste navegador, dados embutidos no HTML e, quando o arquivo estiver em pasta sincronizada/online, tenta ler a versão mais recente disponível.</div>
+          </div>
+          <div class="top-actions">
+            <button class="primary" id="refreshDataTop" type="button">Atualizar</button>
+            <button id="toggleHeaderPanel" type="button">Minimizar cabeçalho</button>
+          </div>
+        </div>
+      <div class="toolbar">
+        <input id="search" type="text" placeholder="Buscar tema, subassunto ou módulo..." />
+        <select id="filterArea"><option value="">Todas as áreas</option></select>
+        <select id="filterPriority"><option value="">Todas as prioridades</option><option>Prioridade 1</option><option>Prioridade 2</option><option>Prioridade 3</option><option>Prioridade 4</option></select>
+        <select id="filterStatus"><option value="">Todos os status</option><option>Planejado</option><option>Em andamento</option><option>Atrasado</option><option>Concluído</option></select>
+        <select id="filterModule"><option value="">Todos os módulos</option></select>
+        <button id="expandAll">Abrir tudo</button>
+        <button id="collapseAll">Fechar tudo</button>
+        <button class="primary" id="exportData">Exportar backup</button>
+      </div>
+      <div class="toolbar" style="grid-template-columns: 1fr auto auto;">
+        <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:white;border:1px solid var(--line);border-radius:12px;">
+          <span class="muted" style="margin:0;">Importar backup/dados antigos (.json, .html ou .txt)</span>
+          <input id="importFile" type="file" accept=".json,.html,.htm,.txt,application/json,text/html,text/plain" style="border:none;padding:0;min-height:auto;" />
+        </label>
+        <button class="warn" id="clearData">Limpar marcações</button>
+        <div id="saveState" class="save-note">Salvo automaticamente neste navegador.</div>
+      </div>
+      <div id="importPanel" class="import-panel" aria-label="Importar dados antigos do cronograma">
+        <div class="import-head">
+          <div>
+            <div class="import-title">Importar dados antigos para este cronograma</div>
+            <div class="import-subtitle">Área preservada para recuperar progresso antigo, backup .json, HTML com progresso ou texto colado.</div>
+          </div>
+          <button id="toggleImportPanel" class="import-toggle" type="button" aria-expanded="true">Minimizar</button>
+        </div>
+        <div class="import-body">
+          <div class="import-help">
+            Use esta área para trazer seu progresso anterior: backup <strong>.json</strong>, outro arquivo <strong>.html</strong> do cronograma que tenha dados embutidos, texto copiado do armazenamento local do navegador ou busca automática no navegador atual.
+          </div>
+          <div class="import-grid">
+            <select id="importMode" title="Modo de importação">
+              <option value="merge" selected>Mesclar mantendo o maior progresso</option>
+              <option value="replace">Substituir pelos dados importados</option>
+            </select>
+            <button id="recoverLocalData" type="button">Buscar dados antigos neste navegador</button>
+            <button id="restoreSafetyBackup" type="button">Restaurar último backup de segurança</button>
+            <button id="importPastedData" type="button">Importar texto colado</button>
+            <button id="clearPasteBox" type="button">Limpar campo</button>
+            <textarea id="importPaste" placeholder="Cole aqui o conteúdo do backup .json ou o valor salvo no localStorage, se você tiver copiado manualmente."></textarea>
+          </div>
+          <div id="importStatus" class="import-status">Dica: para recuperar o progresso de 3600+ questões, abra este arquivo no mesmo navegador onde o cronograma antigo tinha esse progresso e clique em “Buscar dados antigos neste navegador”.</div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="initialPanel" class="initial-panel" aria-label="Parte inicial do cronograma">
+      <div class="initial-head">
+        <div>
+          <div class="initial-title">Visão geral do cronograma</div>
+          <div class="initial-subtitle">Estatísticas principais e legenda de status. Você pode minimizar esta área para focar apenas nos módulos.</div>
+        </div>
+        <button id="toggleInitialPanel" type="button" aria-expanded="true">Minimizar parte inicial</button>
+      </div>
+      <div class="initial-body">
+    <section class="cards">
+      <div class="card"><div class="label">Total de assuntos visíveis</div><div class="value" id="statTotal">0</div></div>
+      <div class="card"><div class="label">Concluídos</div><div class="value" id="statDone">0</div></div>
+      <div class="card"><div class="label">Em andamento</div><div class="value" id="statDoing">0</div></div>
+      <div class="card"><div class="label">Atrasados</div><div class="value" id="statLate">0</div></div>
+      <div class="card"><div class="label">Execução geral</div><div class="value" id="statTasks">0%</div></div>
+      <div class="card"><div class="label">Questões feitas</div><div class="value" id="statQuestions">0</div></div>
+      <div class="card"><div class="label">Questões corretas</div><div class="value" id="statCorrect">0</div></div>
+      <div class="card"><div class="label">Acerto geral</div><div class="value" id="statAccuracy">0%</div></div>
+      <div class="card"><div class="label">Próximas revisões</div><div class="value" id="statReviews">0</div></div>
+      <div class="card"><div class="label">Conteúdos com questões</div><div class="value" id="statFilledTopics">0</div></div>
+      <div class="card"><div class="label">Meta ≥ 80%</div><div class="value" id="statGoal">0/0</div></div>
+      <div class="card"><div class="label">Módulos com extras</div><div class="value" id="statExtras">0</div></div>
+    </section>
+
+    <div class="legend">
+      <span class="pill"><span class="dot" style="background:#bbf7d0;"></span>Concluído fica verde</span>
+      <span class="pill"><span class="dot" style="background:#fde68a;"></span>Atrasado fica amarelo</span>
+      <span class="pill"><span class="dot" style="background:#bfdbfe;"></span>Em andamento fica azul</span>
+      <span class="pill"><span class="dot" style="background:#e5e7eb;"></span>Planejado</span>
+    </div>
+      </div>
+    </section>
+
+    <section id="organizerPanel" class="organizer-panel" aria-label="Painel de organização do cronograma">
+      <div class="organizer-head">
+        <div>
+          <div class="organizer-title">Painel de organização</div>
+          <div class="organizer-subtitle">Filtros rápidos, metas, revisões próximas e ações sugeridas sem alterar os dados do cronograma.</div>
+        </div>
+        <button id="toggleOrganizerPanel" class="organizer-toggle" type="button" aria-expanded="true">Minimizar painel</button>
+      </div>
+      <div class="organizer-body">
+        <div class="quick-actions" aria-label="Filtros rápidos">
+          <button type="button" data-quick="late">Ver atrasados</button>
+          <button type="button" data-quick="doing">Ver em andamento</button>
+          <button type="button" data-quick="lowAccuracy">Acerto &lt; 70%</button>
+          <button type="button" data-quick="reviewSoon">Revisões próximas</button>
+          <button type="button" data-quick="hideDone">Ocultar concluídos</button>
+          <button type="button" data-quick="clear">Limpar filtros rápidos</button>
+        </div>
+        <div class="org-grid">
+          <div class="org-card">
+            <h3>Meta da visão atual</h3>
+            <div class="label">Defina uma meta de questões para acompanhar os filtros ativos.</div>
+            <input id="questionGoal" type="number" min="0" placeholder="Ex.: 200 questões" />
+            <div class="progress-track"><div id="questionGoalBar" class="progress-fill"></div></div>
+            <div id="questionGoalText" class="muted">Defina uma meta para acompanhar.</div>
+          </div>
+          <div class="org-card">
+            <h3>Resumo rápido</h3>
+            <div id="quickSummary" class="org-list"></div>
+          </div>
+          <div class="org-card">
+            <h3>Ações úteis</h3>
+            <div class="two-buttons">
+              <button id="copyCurrentSummary" type="button">Copiar resumo da visão atual</button>
+              <button id="downloadHtmlWithProgress" type="button">Baixar HTML com progresso atual</button>
+              <button id="downloadMobileHtml" type="button">Baixar versão celular/tablet</button>
+              <button id="printCurrentView" type="button">Imprimir visão atual</button>
+            </div>
+          </div>
+          <div class="org-card">
+            <h3>Mapa por área</h3>
+            <div id="areaMap" class="org-list"></div>
+          </div>
+          <div class="org-card" style="grid-column: span 2;">
+            <h3>Próximas ações sugeridas</h3>
+            <div id="focusList" class="org-list"></div>
+          </div>
+          <div class="org-card" style="grid-column: span 2;">
+            <h3>Revisões próximas</h3>
+            <div id="upcomingReviews" class="org-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="calendarPanel" class="calendar-panel" aria-label="Agenda do cronograma">
+      <div class="calendar-head">
+        <div>
+          <div class="calendar-title">Agenda do cronograma</div>
+          <div id="calendarSubtitle" class="calendar-subtitle">Carregando agenda...</div>
+        </div>
+        <div class="calendar-actions">
+          <button id="calendarPrev" type="button" aria-label="Mês anterior">‹</button>
+          <input id="calendarMonthPicker" type="month" aria-label="Selecionar mês da agenda" />
+          <button id="calendarNext" type="button" aria-label="Próximo mês">›</button>
+          <button id="calendarToday" type="button">Hoje</button>
+          <button id="toggleCalendarPanel" type="button" aria-expanded="true">Minimizar agenda</button>
+        </div>
+      </div>
+      <div class="calendar-body">
+        <div class="calendar-layout">
+          <div class="calendar-grid-wrap">
+            <div class="calendar-weekdays" aria-hidden="true">
+              <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+            </div>
+            <div id="calendarGrid" class="calendar-grid"></div>
+          </div>
+          <aside class="day-planner" aria-label="Tarefas do dia selecionado">
+            <div class="selected-day-head">
+              <div>
+                <div id="selectedDayLabel" class="selected-day-title">Dia selecionado</div>
+                <div id="selectedDayMeta" class="task-meta"></div>
+              </div>
+              <button id="newTaskForDay" class="primary" type="button">Nova tarefa</button>
+            </div>
+            <form id="taskForm" class="task-form">
+              <input id="taskTitle" class="full" type="text" placeholder="Tarefa do dia" required />
+              <input id="taskDate" type="date" aria-label="Data da tarefa" />
+              <select id="taskType" aria-label="Tipo de tarefa">
+                <option>Estudo</option>
+                <option>Questões</option>
+                <option>Revisão</option>
+                <option>Simulado</option>
+                <option>Descanso</option>
+                <option>Outro</option>
+              </select>
+              <select id="taskPriority" aria-label="Intensidade da tarefa">
+                <option>Normal</option>
+                <option>Alta</option>
+                <option>Leve</option>
+              </select>
+              <select id="taskModule" aria-label="Módulo vinculado"></select>
+              <textarea id="taskNotes" class="full" placeholder="Observações rápidas"></textarea>
+              <button id="saveTask" class="primary" type="submit">Salvar tarefa</button>
+              <button id="cancelTaskEdit" type="button">Cancelar edição</button>
+            </form>
+            <div id="selectedDayTasks" class="task-list"></div>
+          </aside>
+        </div>
+        <div id="calendarSuggestions" class="calendar-suggestions"></div>
+      </div>
+    </section>
+
+    <section id="modules" class="modules"></section>
+
+    <div class="footer">
+      Salvamento automático: progresso, anotações e agenda ficam neste navegador/dispositivo. Para levar para celular/tablet ou guardar uma cópia externa, use <strong>Baixar versão celular/tablet</strong> ou <strong>Exportar backup</strong>.
+    </div>
+  </main>
+
+  <script>
+    const baseData = [{"module": "1º Módulo", "date": "2026-01-20", "order": 1, "area": "Medicina Preventiva", "theme": "EPIDEMIOLOGIA - INDICADORES DE SAÚDE", "subtopics": "EPIDEMIOLOGIA - INDICADORES DE SAÚDE", "questionsRef": 55, "relevance": 0.025, "priority": "Prioridade 1"}, {"module": "1º Módulo", "date": "2026-01-20", "order": 2, "area": "Cirurgia Geral", "theme": "ABDOME AGUDO", "subtopics": "ABDOME AGUDO", "questionsRef": 43, "relevance": 0.0195, "priority": "Prioridade 1"}, {"module": "1º Módulo", "date": "2026-01-20", "order": 3, "area": "Cirurgia Geral", "theme": "PERIOPERATÓRIO E REMIT", "subtopics": "PERIOPERATÓRIO E REMIT", "questionsRef": 42, "relevance": 0.0191, "priority": "Prioridade 1"}, {"module": "1º Módulo", "date": "2026-01-20", "order": 4, "area": "Clínica Médica", "theme": "IMUNIZAÇÕES", "subtopics": "IMUNIZAÇÕES", "questionsRef": 39, "relevance": 0.0177, "priority": "Prioridade 1"}, {"module": "1º Módulo", "date": "2026-01-20", "order": 5, "area": "Clínica Médica", "theme": "ESTUDOS EPIDEMIOLÓGICOS - CLASSIFICAÇÃO E TIPOS DE ESTUDOS EPIDEMIOLÓGICOS", "subtopics": "ESTUDOS EPIDEMIOLÓGICOS - CLASSIFICAÇÃO E TIPOS DE ESTUDOS EPIDEMIOLÓGICOS", "questionsRef": 33, "relevance": 0.015, "priority": "Prioridade 1"}, {"module": "2º Módulo", "date": "2026-01-26", "order": 1, "area": "Cirurgia Geral", "theme": "DOENÇAS BENIGNAS DAS VIAS BILIARES", "subtopics": "DOENÇAS BENIGNAS DAS VIAS BILIARES", "questionsRef": 33, "relevance": 0.015, "priority": "Prioridade 1"}, {"module": "2º Módulo", "date": "2026-01-26", "order": 2, "area": "Clínica Médica", "theme": "DIABETES", "subtopics": "DIABETES", "questionsRef": 32, "relevance": 0.0145, "priority": "Prioridade 1"}, {"module": "2º Módulo", "date": "2026-01-26", "order": 3, "area": "Clínica Médica", "theme": "ARBOVIROSES", "subtopics": "ARBOVIROSES", "questionsRef": 31, "relevance": 0.0141, "priority": "Prioridade 1"}, {"module": "2º Módulo", "date": "2026-01-26", "order": 4, "area": "Cirurgia Geral", "theme": "CÂNCER DE ESTÔMAGO", "subtopics": "CÂNCER DE ESTÔMAGO", "questionsRef": 29, "relevance": 0.0132, "priority": "Prioridade 1"}, {"module": "2º Módulo", "date": "2026-01-26", "order": 5, "area": "Cirurgia Geral", "theme": "DOENÇAS MALIGNAS DAS VIAS BILIARES", "subtopics": "DOENÇAS MALIGNAS DAS VIAS BILIARES", "questionsRef": 29, "relevance": 0.0132, "priority": "Prioridade 1"}, {"module": "3º Módulo", "date": "2026-02-02", "order": 1, "area": "Medicina Preventiva", "theme": "O SUS - PROGRAMAS", "subtopics": "O SUS - PROGRAMAS", "questionsRef": 29, "relevance": 0.0132, "priority": "Prioridade 1"}, {"module": "3º Módulo", "date": "2026-02-02", "order": 2, "area": "Ginecologia e Obstetrícia", "theme": "NEOPLASIAS DE COLO DE ÚTERO E LESÕES PRECURSORAS", "subtopics": "NEOPLASIAS DE COLO DE ÚTERO E LESÕES PRECURSORAS", "questionsRef": 27, "relevance": 0.0123, "priority": "Prioridade 1"}, {"module": "3º Módulo", "date": "2026-02-02", "order": 3, "area": "Ginecologia e Obstetrícia", "theme": "INFECÇÕES SEXUALMENTE TRANSMISSÍVEIS / VIOLÊNCIA SEXUAL", "subtopics": "INFECÇÕES SEXUALMENTE TRANSMISSÍVEIS / VIOLÊNCIA SEXUAL", "questionsRef": 27, "relevance": 0.0123, "priority": "Prioridade 1"}, {"module": "3º Módulo", "date": "2026-02-02", "order": 4, "area": "Ginecologia e Obstetrícia", "theme": "PARTO - ASSISTÊNCIA AO PARTO", "subtopics": "PARTO - ASSISTÊNCIA AO PARTO", "questionsRef": 26, "relevance": 0.0118, "priority": "Prioridade 2"}, {"module": "3º Módulo", "date": "2026-02-02", "order": 5, "area": "Medicina Preventiva", "theme": "BIOÉTICA", "subtopics": "BIOÉTICA", "questionsRef": 25, "relevance": 0.0114, "priority": "Prioridade 2"}, {"module": "4º Módulo", "date": "2026-02-09", "order": 1, "area": "Pediatria", "theme": "INFECÇÕES DE VIAS AÉREAS INFERIORES NA INFÂNCIA", "subtopics": "INFECÇÕES DE VIAS AÉREAS INFERIORES NA INFÂNCIA", "questionsRef": 25, "relevance": 0.0114, "priority": "Prioridade 2"}, {"module": "4º Módulo", "date": "2026-02-09", "order": 2, "area": "Medicina Preventiva", "theme": "EPIDEMIOLOGIA - VALIDAÇÃO DE TESTES DIAGNÓSTICOS", "subtopics": "EPIDEMIOLOGIA - VALIDAÇÃO DE TESTES DIAGNÓSTICOS", "questionsRef": 25, "relevance": 0.0114, "priority": "Prioridade 2"}, {"module": "4º Módulo", "date": "2026-02-09", "order": 3, "area": "Pediatria", "theme": "HÉRNIAS DE PAREDE ABDOMINAL", "subtopics": "HÉRNIAS DE PAREDE ABDOMINAL", "questionsRef": 24, "relevance": 0.0109, "priority": "Prioridade 2"}, {"module": "4º Módulo", "date": "2026-02-09", "order": 4, "area": "Ginecologia e Obstetrícia", "theme": "AMENORREIAS, EMBRIOLOGIA E DISTÚRBIOS DA DIFERENCIAÇÃO SEXUAL", "subtopics": "AMENORREIAS, EMBRIOLOGIA E DISTÚRBIOS DA DIFERENCIAÇÃO SEXUAL", "questionsRef": 24, "relevance": 0.0109, "priority": "Prioridade 2"}, {"module": "5º Módulo", "date": "2026-02-16", "order": 1, "area": "Ginecologia e Obstetrícia", "theme": "SANGRAMENTOS NA 1ª METADE DA GESTAÇÃO", "subtopics": "SANGRAMENTOS NA 1ª METADE DA GESTAÇÃO", "questionsRef": 23, "relevance": 0.0104, "priority": "Prioridade 2"}, {"module": "5º Módulo", "date": "2026-02-16", "order": 2, "area": "Cirurgia Geral", "theme": "NEOPLASIAS DE COLON, RETO E CANAL ANAL", "subtopics": "NEOPLASIAS DE COLON, RETO E CANAL ANAL", "questionsRef": 23, "relevance": 0.0104, "priority": "Prioridade 2"}, {"module": "5º Módulo", "date": "2026-02-16", "order": 3, "area": "Cirurgia Geral", "theme": "DOENÇAS BENIGNAS DO ESTÔMAGO E DRGE", "subtopics": "DOENÇAS BENIGNAS DO ESTÔMAGO E DRGE", "questionsRef": 22, "relevance": 0.01, "priority": "Prioridade 2"}, {"module": "5º Módulo", "date": "2026-02-16", "order": 4, "area": "Pediatria", "theme": "DIARREIA E DESIDRATAÇÃO NA INFÂNCIA", "subtopics": "DIARREIA E DESIDRATAÇÃO NA INFÂNCIA", "questionsRef": 22, "relevance": 0.01, "priority": "Prioridade 2"}, {"module": "5º Módulo", "date": "2026-02-16", "order": 5, "area": "Cirurgia Geral", "theme": "NEOPLASIAS HEPÁTICAS E ESPLÊNICAS", "subtopics": "NEOPLASIAS HEPÁTICAS E ESPLÊNICAS", "questionsRef": 22, "relevance": 0.01, "priority": "Prioridade 2"}, {"module": "6º Módulo", "date": "2026-02-23", "order": 1, "area": "Ginecologia e Obstetrícia", "theme": "DISTOPIAS GENITAIS E POP-Q", "subtopics": "DISTOPIAS GENITAIS E POP-Q", "questionsRef": 22, "relevance": 0.01, "priority": "Prioridade 2"}, {"module": "6º Módulo", "date": "2026-02-23", "order": 2, "area": "Clínica Médica", "theme": "COLAGENOSES", "subtopics": "COLAGENOSES", "questionsRef": 21, "relevance": 0.0095, "priority": "Prioridade 2"}, {"module": "6º Módulo", "date": "2026-02-23", "order": 3, "area": "Ginecologia e Obstetrícia", "theme": "DIAGNÓSTICO DE GRAVIDEZ", "subtopics": "DIAGNÓSTICO DE GRAVIDEZ", "questionsRef": 21, "relevance": 0.0095, "priority": "Prioridade 2"}, {"module": "6º Módulo", "date": "2026-02-23", "order": 4, "area": "Clínica Médica", "theme": "ANEMIAS HIPOPROLIFERATIVAS", "subtopics": "ANEMIAS HIPOPROLIFERATIVAS", "questionsRef": 21, "relevance": 0.0095, "priority": "Prioridade 2"}, {"module": "7º Módulo", "date": "2026-03-02", "order": 1, "area": "Ginecologia e Obstetrícia", "theme": "PRÉ-NATAL", "subtopics": "PRÉ-NATAL", "questionsRef": 21, "relevance": 0.0095, "priority": "Prioridade 2"}, {"module": "7º Módulo", "date": "2026-03-02", "order": 2, "area": "Clínica Médica", "theme": "CIRROSE HEPÁTICA E SUAS COMPLICAÇÕES", "subtopics": "CIRROSE HEPÁTICA E SUAS COMPLICAÇÕES", "questionsRef": 20, "relevance": 0.0091, "priority": "Prioridade 2"}, {"module": "7º Módulo", "date": "2026-03-02", "order": 3, "area": "Clínica Médica", "theme": "GLOMERULOPATIAS", "subtopics": "GLOMERULOPATIAS", "questionsRef": 20, "relevance": 0.0091, "priority": "Prioridade 2"}, {"module": "7º Módulo", "date": "2026-03-02", "order": 4, "area": "Ginecologia e Obstetrícia", "theme": "DOENÇAS HIPERTENSIVAS NA GRAVIDEZ", "subtopics": "DOENÇAS HIPERTENSIVAS NA GRAVIDEZ", "questionsRef": 20, "relevance": 0.0091, "priority": "Prioridade 2"}, {"module": "7º Módulo", "date": "2026-03-02", "order": 5, "area": "Medicina Preventiva", "theme": "O SUS - LEIS ORGÂNICAS", "subtopics": "O SUS - LEIS ORGÂNICAS", "questionsRef": 20, "relevance": 0.0091, "priority": "Prioridade 2"}, {"module": "8º Módulo", "date": "2026-03-09", "order": 1, "area": "Clínica Médica", "theme": "UTI", "subtopics": "UTI", "questionsRef": 19, "relevance": 0.0086, "priority": "Prioridade 2"}, {"module": "8º Módulo", "date": "2026-03-09", "order": 2, "area": "Medicina Preventiva", "theme": "O SUS - HISTÓRIA DO SUS", "subtopics": "O SUS - HISTÓRIA DO SUS", "questionsRef": 19, "relevance": 0.0086, "priority": "Prioridade 2"}, {"module": "8º Módulo", "date": "2026-03-09", "order": 3, "area": "Ginecologia e Obstetrícia", "theme": "ANTICONCEPÇÃO", "subtopics": "ANTICONCEPÇÃO", "questionsRef": 18, "relevance": 0.008199999999999999, "priority": "Prioridade 2"}, {"module": "8º Módulo", "date": "2026-03-09", "order": 4, "area": "Ginecologia e Obstetrícia", "theme": "CICLO MENSTRUAL", "subtopics": "CICLO MENSTRUAL", "questionsRef": 18, "relevance": 0.008199999999999999, "priority": "Prioridade 2"}, {"module": "8º Módulo", "date": "2026-03-09", "order": 5, "area": "Clínica Médica", "theme": "HAS (HIPERTENSÃO ARTERIAL SISTÊMICA)", "subtopics": "HAS (HIPERTENSÃO ARTERIAL SISTÊMICA)", "questionsRef": 18, "relevance": 0.008199999999999999, "priority": "Prioridade 2"}, {"module": "9º Módulo", "date": "2026-03-16", "order": 1, "area": "Clínica Médica", "theme": "TUBERCULOSE", "subtopics": "TUBERCULOSE", "questionsRef": 18, "relevance": 0.008199999999999999, "priority": "Prioridade 2"}, {"module": "9º Módulo", "date": "2026-03-16", "order": 2, "area": "Clínica Médica", "theme": "ARTRITES", "subtopics": "ARTRITES", "questionsRef": 18, "relevance": 0.008199999999999999, "priority": "Prioridade 2"}, {"module": "9º Módulo", "date": "2026-03-16", "order": 3, "area": "Clínica Médica", "theme": "DOENÇAS EXANTEMÁTICAS", "subtopics": "DOENÇAS EXANTEMÁTICAS", "questionsRef": 17, "relevance": 0.0077, "priority": "Prioridade 3"}, {"module": "9º Módulo", "date": "2026-03-16", "order": 4, "area": "Medicina Preventiva", "theme": "O SUS - PRINCÍPIOS DO SUS", "subtopics": "O SUS - PRINCÍPIOS DO SUS", "questionsRef": 17, "relevance": 0.0077, "priority": "Prioridade 3"}, {"module": "10º Módulo", "date": "2026-03-23", "order": 1, "area": "Clínica Médica", "theme": "ESTUDOS EPIDEMIOLÓGICOS - FÓRMULAS E CÁLCULOS", "subtopics": "ESTUDOS EPIDEMIOLÓGICOS - FÓRMULAS E CÁLCULOS", "questionsRef": 16, "relevance": 0.0073, "priority": "Prioridade 3"}, {"module": "10º Módulo", "date": "2026-03-23", "order": 2, "area": "Medicina Preventiva", "theme": "VIGILÂNCIA EPIDEMIOLÓGICA - SISTEMAS DE INFORMAÇÃO E NOTIFICAÇÃO", "subtopics": "VIGILÂNCIA EPIDEMIOLÓGICA - SISTEMAS DE INFORMAÇÃO E NOTIFICAÇÃO", "questionsRef": 16, "relevance": 0.0073, "priority": "Prioridade 3"}, {"module": "10º Módulo", "date": "2026-03-23", "order": 3, "area": "Clínica Médica", "theme": "SÍNDROMES DIARREICAS", "subtopics": "SÍNDROMES DIARREICAS", "questionsRef": 16, "relevance": 0.0073, "priority": "Prioridade 3"}, {"module": "10º Módulo", "date": "2026-03-23", "order": 4, "area": "Clínica Médica", "theme": "DOENÇAS DA TIREOIDE", "subtopics": "DOENÇAS DA TIREOIDE", "questionsRef": 16, "relevance": 0.0073, "priority": "Prioridade 3"}, {"module": "10º Módulo", "date": "2026-03-23", "order": 5, "area": "Clínica Médica", "theme": "TVP/TEP (TROMBOEMBOLISMO VENOSO)", "subtopics": "TVP/TEP (TROMBOEMBOLISMO VENOSO)", "questionsRef": 16, "relevance": 0.0073, "priority": "Prioridade 3"}, {"module": "11º Módulo", "date": "2026-03-30", "order": 1, "area": "Clínica Médica", "theme": "INFECÇÕES DO SISTEMA NERVOSO CENTRAL", "subtopics": "INFECÇÕES DO SISTEMA NERVOSO CENTRAL", "questionsRef": 16, "relevance": 0.0073, "priority": "Prioridade 3"}, {"module": "11º Módulo", "date": "2026-03-30", "order": 2, "area": "Pediatria", "theme": "NEONATOLOGIA - ICTERÍCIA NEONATAL", "subtopics": "NEONATOLOGIA - ICTERÍCIA NEONATAL", "questionsRef": 16, "relevance": 0.0073, "priority": "Prioridade 3"}, {"module": "11º Módulo", "date": "2026-03-30", "order": 3, "area": "Pediatria", "theme": "INFECÇÕES DE VIAS AÉREAS SUPERIORES E INTERMEDIÁRIAS NA INFÂNCIA", "subtopics": "INFECÇÕES DE VIAS AÉREAS SUPERIORES E INTERMEDIÁRIAS NA INFÂNCIA", "questionsRef": 15, "relevance": 0.0068, "priority": "Prioridade 3"}, {"module": "11º Módulo", "date": "2026-03-30", "order": 4, "area": "Clínica Médica", "theme": "DAC (DOENÇA ARTERIAL CORONARIANA)", "subtopics": "DAC (DOENÇA ARTERIAL CORONARIANA)", "questionsRef": 15, "relevance": 0.0068, "priority": "Prioridade 3"}, {"module": "11º Módulo", "date": "2026-03-30", "order": 5, "area": "Pediatria", "theme": "ALEITAMENTO MATERNO, ALIMENTAÇÃO E TRANSIÇÃO ALIMENTAR", "subtopics": "ALEITAMENTO MATERNO, ALIMENTAÇÃO E TRANSIÇÃO ALIMENTAR", "questionsRef": 15, "relevance": 0.0068, "priority": "Prioridade 3"}, {"module": "12º Módulo", "date": "2026-04-06", "order": 1, "area": "Pediatria", "theme": "NEONATOLOGIA - INFECÇÕES CONGÊNITAS", "subtopics": "NEONATOLOGIA - INFECÇÕES CONGÊNITAS", "questionsRef": 15, "relevance": 0.0068, "priority": "Prioridade 3"}, {"module": "12º Módulo", "date": "2026-04-06", "order": 2, "area": "Pediatria", "theme": "PUBERDADE E AVALIAÇÃO DE ALTA E BAIXA ESTATURA", "subtopics": "PUBERDADE E AVALIAÇÃO DE ALTA E BAIXA ESTATURA", "questionsRef": 14, "relevance": 0.0064, "priority": "Prioridade 3"}, {"module": "12º Módulo", "date": "2026-04-06", "order": 3, "area": "Ginecologia e Obstetrícia", "theme": "SANGRAMENTO UTERINO ANORMAL E NEOPLASIAS DE ENDOMÉTRIO", "subtopics": "SANGRAMENTO UTERINO ANORMAL E NEOPLASIAS DE ENDOMÉTRIO", "questionsRef": 14, "relevance": 0.0064, "priority": "Prioridade 3"}, {"module": "12º Módulo", "date": "2026-04-06", "order": 4, "area": "Ginecologia e Obstetrícia", "theme": "SOP (SÍNDROME DOS OVÁRIOS POLICÍSTICOS)", "subtopics": "SOP (SÍNDROME DOS OVÁRIOS POLICÍSTICOS)", "questionsRef": 14, "relevance": 0.0064, "priority": "Prioridade 3"}, {"module": "12º Módulo", "date": "2026-04-06", "order": 5, "area": "Cirurgia Geral", "theme": "ESPECIALIDADES CIRÚRGICAS - PROCTOLOGIA", "subtopics": "ESPECIALIDADES CIRÚRGICAS - PROCTOLOGIA", "questionsRef": 14, "relevance": 0.0064, "priority": "Prioridade 3"}, {"module": "13º Módulo", "date": "2026-04-13", "order": 1, "area": "Clínica Médica", "theme": "DISPLASIAS HEMATOLÓGICAS", "subtopics": "DISPLASIAS HEMATOLÓGICAS", "questionsRef": 14, "relevance": 0.0064, "priority": "Prioridade 3"}, {"module": "13º Módulo", "date": "2026-04-13", "order": 2, "area": "Clínica Médica", "theme": "DISTÚRBIOS ÁCIDO-BÁSICOS", "subtopics": "DISTÚRBIOS ÁCIDO-BÁSICOS", "questionsRef": 14, "relevance": 0.0064, "priority": "Prioridade 3"}, {"module": "13º Módulo", "date": "2026-04-13", "order": 3, "area": "Cirurgia Geral", "theme": "AVALIAÇÃO INICIAL DO TRAUMA", "subtopics": "AVALIAÇÃO INICIAL DO TRAUMA", "questionsRef": 14, "relevance": 0.0064, "priority": "Prioridade 3"}, {"module": "13º Módulo", "date": "2026-04-13", "order": 4, "area": "Clínica Médica", "theme": "HEPATOESPLENOMEGALIA FEBRIL", "subtopics": "HEPATOESPLENOMEGALIA FEBRIL", "questionsRef": 14, "relevance": 0.0064, "priority": "Prioridade 3"}, {"module": "14º Módulo", "date": "2026-04-20", "order": 1, "area": "Clínica Médica", "theme": "PNEUMONIAS E DERRAME PLEURAL", "subtopics": "PNEUMONIAS E DERRAME PLEURAL", "questionsRef": 14, "relevance": 0.0064, "priority": "Prioridade 3"}, {"module": "14º Módulo", "date": "2026-04-20", "order": 2, "area": "Pediatria", "theme": "ASMA EM PEDIATRIA", "subtopics": "ASMA EM PEDIATRIA", "questionsRef": 13, "relevance": 0.0059, "priority": "Prioridade 3"}, {"module": "14º Módulo", "date": "2026-04-20", "order": 3, "area": "Clínica Médica", "theme": "ITU (INFECÇÃO DO TRATO URINÁRIO)", "subtopics": "ITU (INFECÇÃO DO TRATO URINÁRIO)", "questionsRef": 13, "relevance": 0.0059, "priority": "Prioridade 3"}, {"module": "14º Módulo", "date": "2026-04-20", "order": 4, "area": "Clínica Médica", "theme": "INFECÇÕES DE VIAS AÉREAS E COVID", "subtopics": "INFECÇÕES DE VIAS AÉREAS E COVID", "questionsRef": 13, "relevance": 0.0059, "priority": "Prioridade 3"}, {"module": "15º Módulo", "date": "2026-04-27", "order": 1, "area": "Cirurgia Geral", "theme": "TRAUMA DE ABDOME E PELVE", "subtopics": "TRAUMA DE ABDOME E PELVE", "questionsRef": 13, "relevance": 0.0059, "priority": "Prioridade 3"}, {"module": "15º Módulo", "date": "2026-04-27", "order": 2, "area": "Ginecologia e Obstetrícia", "theme": "RPMO (RUPTURA PREMATURA DE MEMBRANAS OVULARES)", "subtopics": "RPMO (RUPTURA PREMATURA DE MEMBRANAS OVULARES)", "questionsRef": 12, "relevance": 0.0054, "priority": "Prioridade 3"}, {"module": "15º Módulo", "date": "2026-04-27", "order": 3, "area": "Cirurgia Geral", "theme": "CÂNCER DE ESÔFAGO", "subtopics": "CÂNCER DE ESÔFAGO", "questionsRef": 12, "relevance": 0.0054, "priority": "Prioridade 3"}, {"module": "15º Módulo", "date": "2026-04-27", "order": 4, "area": "Cirurgia Geral", "theme": "ESPECIALIDADES CIRÚRGICAS - CIRURGIA BARIÁTRICA", "subtopics": "ESPECIALIDADES CIRÚRGICAS - CIRURGIA BARIÁTRICA", "questionsRef": 12, "relevance": 0.0054, "priority": "Prioridade 3"}, {"module": "16º Módulo", "date": "2026-05-04", "order": 1, "area": "Medicina Preventiva", "theme": "ATENÇÃO BÁSICA - PRINCÍPIOS DA ATENÇÃO PRIMÁRIA", "subtopics": "ATENÇÃO BÁSICA - PRINCÍPIOS DA ATENÇÃO PRIMÁRIA", "questionsRef": 12, "relevance": 0.0054, "priority": "Prioridade 3"}, {"module": "16º Módulo", "date": "2026-05-04", "order": 2, "area": "Clínica Médica", "theme": "ESPECIALIDADES PEDIÁTRICAS - GASTROENTEROLOGIA PEDIÁTRICA", "subtopics": "ESPECIALIDADES PEDIÁTRICAS - GASTROENTEROLOGIA PEDIÁTRICA", "questionsRef": 12, "relevance": 0.0054, "priority": "Prioridade 3"}, {"module": "16º Módulo", "date": "2026-05-04", "order": 3, "area": "Medicina Preventiva", "theme": "ATENÇÃO BÁSICA - ESTRATÉGIA DE SAÚDE DA FAMÍLIA", "subtopics": "ATENÇÃO BÁSICA - ESTRATÉGIA DE SAÚDE DA FAMÍLIA", "questionsRef": 12, "relevance": 0.0054, "priority": "Prioridade 3"}, {"module": "16º Módulo", "date": "2026-05-04", "order": 4, "area": "Cirurgia Geral", "theme": "OBSTRUÇÃO INTESTINAL", "subtopics": "OBSTRUÇÃO INTESTINAL", "questionsRef": 12, "relevance": 0.0054, "priority": "Prioridade 3"}, {"module": "17º Módulo", "date": "2026-05-11", "order": 1, "area": "Clínica Médica", "theme": "INSUFICIÊNCIA RENAL AGUDA", "subtopics": "INSUFICIÊNCIA RENAL AGUDA", "questionsRef": 12, "relevance": 0.0054, "priority": "Prioridade 3"}, {"module": "17º Módulo", "date": "2026-05-11", "order": 2, "area": "Pediatria", "theme": "CRESCIMENTO E DESENVOLVIMENTO", "subtopics": "CRESCIMENTO E DESENVOLVIMENTO", "questionsRef": 12, "relevance": 0.0054, "priority": "Prioridade 3"}, {"module": "17º Módulo", "date": "2026-05-11", "order": 3, "area": "Medicina Preventiva", "theme": "EPIDEMIOLOGIA - HISTÓRIA NATURAL DAS DOENÇAS E NÍVEIS DE PREVENÇÃO", "subtopics": "EPIDEMIOLOGIA - HISTÓRIA NATURAL DAS DOENÇAS E NÍVEIS DE PREVENÇÃO", "questionsRef": 12, "relevance": 0.0054, "priority": "Prioridade 3"}, {"module": "17º Módulo", "date": "2026-05-11", "order": 4, "area": "Ginecologia e Obstetrícia", "theme": "DOENÇAS BENIGNAS E NEOPLASIAS DE MAMA", "subtopics": "DOENÇAS BENIGNAS E NEOPLASIAS DE MAMA", "questionsRef": 11, "relevance": 0.005, "priority": "Prioridade 3"}, {"module": "18º Módulo", "date": "2026-05-18", "order": 1, "area": "Cirurgia Geral", "theme": "DOENÇAS BENIGNAS DO ESÔFAGO", "subtopics": "DOENÇAS BENIGNAS DO ESÔFAGO", "questionsRef": 11, "relevance": 0.005, "priority": "Prioridade 3"}, {"module": "18º Módulo", "date": "2026-05-18", "order": 2, "area": "Pediatria", "theme": "PREVENÇÃO DE ACIDENTES E NOVA PUERICULTURA", "subtopics": "PREVENÇÃO DE ACIDENTES E NOVA PUERICULTURA", "questionsRef": 11, "relevance": 0.005, "priority": "Prioridade 3"}, {"module": "18º Módulo", "date": "2026-05-18", "order": 3, "area": "Cirurgia Geral", "theme": "ANESTESIOLOGIA", "subtopics": "ANESTESIOLOGIA", "questionsRef": 11, "relevance": 0.005, "priority": "Prioridade 3"}, {"module": "18º Módulo", "date": "2026-05-18", "order": 4, "area": "Clínica Médica", "theme": "SOFRIMENTO FETAL", "subtopics": "SOFRIMENTO FETAL", "questionsRef": 11, "relevance": 0.005, "priority": "Prioridade 3"}, {"module": "19º Módulo", "date": "2026-05-25", "order": 1, "area": "Clínica Médica", "theme": "DISTÚRBIOS DA HEMOSTASIA", "subtopics": "DISTÚRBIOS DA HEMOSTASIA", "questionsRef": 11, "relevance": 0.005, "priority": "Prioridade 3"}, {"module": "19º Módulo", "date": "2026-05-25", "order": 2, "area": "Clínica Médica", "theme": "Antibioticoterapia e síndromes febris", "subtopics": "ANTIBIÓTICOS • SÍNDROMES FEBRIS", "questionsRef": 20, "relevance": 0.004500000000000001, "priority": "Prioridade 4"}, {"module": "19º Módulo", "date": "2026-05-25", "order": 3, "area": "Clínica Médica", "theme": "Insuficiência cardíaca, arritmias, dislipidemia e valvopatias", "subtopics": "INSUFICIÊNCIA CARDÍACA • ARRITMIAS • DISLIPIDEMIA • VALVOPATIAS", "questionsRef": 17, "relevance": 0.004500000000000001, "priority": "Prioridade 4"}, {"module": "19º Módulo", "date": "2026-05-25", "order": 4, "area": "Clínica Médica", "theme": "Endocardite, febre reumática e cardiopatias congênitas", "subtopics": "ENDOCARDITE INFECCIOSA • FEBRE REUMÁTICA • CARDIOPATIAS CONGÊNITAS", "questionsRef": 18, "relevance": 0.0036, "priority": "Prioridade 4"}, {"module": "20º Módulo", "date": "2026-06-01", "order": 1, "area": "Ginecologia e Obstetrícia", "theme": "Incontinência urinária e climatério", "subtopics": "INCONTINÊNCIA URINÁRIA • CLIMATÉRIO", "questionsRef": 20, "relevance": 0.004500000000000001, "priority": "Prioridade 4"}, {"module": "20º Módulo", "date": "2026-06-01", "order": 2, "area": "Ginecologia e Obstetrícia", "theme": "Endometriose, dismenorreia e síndrome pré-menstrual", "subtopics": "ENDOMETRIOSE • DISMENORREIA E SÍNDROME PRÉ-MENSTRUAL", "questionsRef": 18, "relevance": 0.004500000000000001, "priority": "Prioridade 4"}, {"module": "20º Módulo", "date": "2026-06-01", "order": 3, "area": "Clínica Médica", "theme": "Vasculites, urticária e anafilaxia", "subtopics": "VASCULITES • URTICÁRIA E ANAFILAXIA", "questionsRef": 17, "relevance": 0.004500000000000001, "priority": "Prioridade 4"}, {"module": "20º Módulo", "date": "2026-06-01", "order": 4, "area": "Cirurgia Geral", "theme": "Trauma cranioencefálico, torácico e raquimedular", "subtopics": "TRAUMA CRANIOENCEFÁLICO (TCE) • TRAUMA DE TÓRAX • TRAUMA RAQUIMEDULAR (TRM)", "questionsRef": 24, "relevance": 0.004500000000000001, "priority": "Prioridade 4"}, {"module": "20º Módulo", "date": "2026-06-01", "order": 5, "area": "Clínica Médica", "theme": "Hipertensão portal e sangramento gastrointestinal", "subtopics": "HIPERTENSÃO PORTAL • SANGRAMENTO GASTROINTESTINAL", "questionsRef": 15, "relevance": 0.004500000000000001, "priority": "Prioridade 4"}, {"module": "21º Módulo", "date": "2026-06-08", "order": 1, "area": "Clínica Médica", "theme": "Paratireoides, osteometabólicas e eixo hipófise-suprarrenal", "subtopics": "PARATIREOIDES • DOENÇAS OSTEOMETABÓLICAS • DOENÇAS DA HIPÓFISE, SUPRARRENAIS E OBESIDADE", "questionsRef": 22, "relevance": 0.004500000000000001, "priority": "Prioridade 4"}, {"module": "21º Módulo", "date": "2026-06-08", "order": 2, "area": "Clínica Médica", "theme": "Parasitoses, animais peçonhentos e intoxicações", "subtopics": "PARASITOSES INTESTINAIS • ANIMAIS PEÇONHENTOS • INTOXICAÇÃO EXÓGENA", "questionsRef": 22, "relevance": 0.004099999999999999, "priority": "Prioridade 4"}, {"module": "21º Módulo", "date": "2026-06-08", "order": 3, "area": "Cirurgia Geral", "theme": "Cirurgia pediátrica, urologia e delgado/apêndice", "subtopics": "ESPECIALIDADES PEDIÁTRICAS - CIRURGIA PEDIÁTRICA (CIPE) • ESPECIALIDADES CIRÚRGICAS - UROLOGIA • NEOPLASIAS DE DELGADO E APÊNDICE", "questionsRef": 18, "relevance": 0.004099999999999999, "priority": "Prioridade 4"}, {"module": "21º Módulo", "date": "2026-06-08", "order": 4, "area": "Pediatria", "theme": "Neonatologia: respiração, rotina e exame físico do RN", "subtopics": "NEONATOLOGIA - DISTÚRBIOS RESPIRATÓRIOS DO RN • NEONATOLOGIA - CUIDADOS DE ROTINA • NEONATOLOGIA - EXAME FÍSICO DO RN", "questionsRef": 20, "relevance": 0.004099999999999999, "priority": "Prioridade 4"}, {"module": "21º Módulo", "date": "2026-06-08", "order": 5, "area": "Clínica Médica", "theme": "Distúrbios hidroeletrolíticos e doença renal crônica", "subtopics": "DISTÚRBIOS HIDROELETROLÍTICOS • DOENÇA RENAL CRÔNICA", "questionsRef": 13, "relevance": 0.004099999999999999, "priority": "Prioridade 4"}, {"module": "22º Módulo", "date": "2026-06-15", "order": 1, "area": "Clínica Médica", "theme": "Convulsão e cefaleias", "subtopics": "CONVULSÃO • CEFALEIAS", "questionsRef": 16, "relevance": 0.004099999999999999, "priority": "Prioridade 4"}, {"module": "22º Módulo", "date": "2026-06-15", "order": 2, "area": "Clínica Médica", "theme": "AVC e neuropatias", "subtopics": "AVC (ACIDENTE VASCULAR CEREBRAL) • NEUROPATIAS", "questionsRef": 10, "relevance": 0.0027, "priority": "Prioridade 4"}, {"module": "22º Módulo", "date": "2026-06-15", "order": 3, "area": "Medicina Preventiva", "theme": "Comunicação clínica, rastreio e NASF", "subtopics": "ATENÇÃO BÁSICA - INSTRUMENTOS DE COMUNICAÇÃO (MCCP) • RASTREIO DE DOENÇAS • ATENÇÃO BÁSICA - NASF", "questionsRef": 16, "relevance": 0.004099999999999999, "priority": "Prioridade 4"}, {"module": "22º Módulo", "date": "2026-06-15", "order": 4, "area": "Ginecologia e Obstetrícia", "theme": "Parto: estática, trajeto e motor", "subtopics": "PARTO - ESTÁTICA • PARTO - TRAJETO • PARTO - MOTOR", "questionsRef": 19, "relevance": 0.004099999999999999, "priority": "Prioridade 4"}, {"module": "23º Módulo", "date": "2026-06-22", "order": 1, "area": "Ginecologia e Obstetrícia", "theme": "Parto: mecanismo e fórceps", "subtopics": "PARTO - MECANISMO DO PARTO • FÓRCEPS", "questionsRef": 8, "relevance": 0.0027, "priority": "Prioridade 4"}, {"module": "23º Módulo", "date": "2026-06-22", "order": 2, "area": "Medicina Preventiva", "theme": "Vigilância: notificação, transmissão, saúde do trabalhador e emergências", "subtopics": "VIGILÂNCIA EPIDEMIOLÓGICA - DOENÇAS DE NOTIFICAÇÃO COMPULSÓRIA • VIGILÂNCIA EPIDEMIOLÓGICA - CLASSIFICAÇÃO DAS EPIDEMIAS • VIGILÂNCIA EM SAÚDE - SAÚDE DO TRABALHADOR • EMERGÊNCIAS EM SAÚDE PÚBLICA • VIGILÂNCIA EPIDEMIOLÓGICA - TIPOS DE TRANSMISSÃO DE DOENÇAS", "questionsRef": 18, "relevance": 0.004099999999999999, "priority": "Prioridade 4"}, {"module": "23º Módulo", "date": "2026-06-22", "order": 3, "area": "Clínica Médica", "theme": "DPOC e asma do adulto", "subtopics": "DPOC (DOENÇA PULMONAR OBSTRUTIVA CRÔNICA) • ASMA EM ADULTO", "questionsRef": 12, "relevance": 0.0036, "priority": "Prioridade 4"}, {"module": "23º Módulo", "date": "2026-06-22", "order": 4, "area": "Medicina Preventiva", "theme": "SUS: sistemas de saúde e participação social", "subtopics": "O SUS - SISTEMAS DE SAÚDE • SUS - PARTICIPAÇÃO SOCIAL", "questionsRef": 15, "relevance": 0.0036, "priority": "Prioridade 4"}, {"module": "24º Módulo", "date": "2026-06-29", "order": 1, "area": "Medicina Preventiva", "theme": "SUS: financiamento e pacto pela saúde", "subtopics": "O SUS - FINANCIAMENTO DO SUS • ATENÇÃO BÁSICA - PACTO PELA SAÚDE", "questionsRef": 6, "relevance": 0.0023, "priority": "Prioridade 4"}, {"module": "24º Módulo", "date": "2026-06-29", "order": 2, "area": "Ginecologia e Obstetrícia", "theme": "Diabetes na gravidez, organismo materno e medicina fetal", "subtopics": "DIABETES MELLITUS (DM) NA GRAVIDEZ • MODIFICAÇÕES DO ORGANISMO MATERNO • MEDICINA FETAL", "questionsRef": 16, "relevance": 0.0036, "priority": "Prioridade 4"}, {"module": "24º Módulo", "date": "2026-06-29", "order": 3, "area": "Medicina Preventiva", "theme": "Epidemiologia quantitativa: variáveis e tendência central", "subtopics": "ESTUDOS EPIDEMIOLÓGICOS - TIPOS DE VARIÁVEIS • ESTUDOS EPIDEMIOLÓGICOS - MEDIDAS DE TENDÊNCIA CENTRAL", "questionsRef": 16, "relevance": 0.0036, "priority": "Prioridade 4"}, {"module": "24º Módulo", "date": "2026-06-29", "order": 4, "area": "Medicina Preventiva", "theme": "Epidemiologia quantitativa: amostragem, causalidade e transição", "subtopics": "ESTUDOS EPIDEMIOLÓGICOS - TIPOS DE AMOSTRAGEM • ESTUDOS EPIDEMIOLÓGICO - CRITÉRIOS DE CASUALIDADE • EPIDEMIOLOGIA - TRANSIÇÃO DEMOGRÁFICA E EPIDEMIOLÓGICA", "questionsRef": 15, "relevance": 0.0032, "priority": "Prioridade 4"}, {"module": "25º Módulo", "date": "2026-07-06", "order": 1, "area": "Clínica Médica", "theme": "Dermatologia: hanseníase, lesões e câncer de pele", "subtopics": "INFECÇÕES DE PELE E HANSENÍASE • LESÕES ELEMENTARES, ERITEMATODESCAMATIVAS, ECZEMAS E BULOSES • CÂNCER DE PELE E LESÕES PRECURSORAS", "questionsRef": 11, "relevance": 0.0036, "priority": "Prioridade 4"}, {"module": "25º Módulo", "date": "2026-07-06", "order": 2, "area": "Ginecologia e Obstetrícia", "theme": "Prematuridade, TPP e hemorragia pós-parto", "subtopics": "TRABALHO DE PARTO PREMATURO • HEMORRAGIA PÓS-PARTO • PUERPÉRIO", "questionsRef": 19, "relevance": 0.0036, "priority": "Prioridade 4"}, {"module": "25º Módulo", "date": "2026-07-06", "order": 3, "area": "Ginecologia e Obstetrícia", "theme": "Obstetrícia tardia: 2ª metade, gemelaridade e DHPN", "subtopics": "SANGRAMENTOS NA 2ª METADE DA GESTAÇÃO • GEMELARIDADE • DHPN (DOENÇA HEMOLÍTICA PERINATAL)", "questionsRef": 18, "relevance": 0.0032, "priority": "Prioridade 4"}, {"module": "25º Módulo", "date": "2026-07-06", "order": 4, "area": "Clínica Médica", "theme": "Anemias hiperproliferativas", "subtopics": "ANEMIAS HIPERPROLIFERATIVAS", "questionsRef": 8, "relevance": 0.0036, "priority": "Prioridade 4"}, {"module": "26º Módulo", "date": "2026-07-13", "order": 1, "area": "Pediatria", "theme": "Psiquiatria na infância e adolescência", "subtopics": "TRANSTORNOS PSIQUIÁTRICOS DA INFÂNCIA/ADOLESCÊNCIA", "questionsRef": 8, "relevance": 0.0036, "priority": "Prioridade 4"}, {"module": "26º Módulo", "date": "2026-07-13", "order": 2, "area": "Pediatria", "theme": "Endócrino e cardiologia pediátrica", "subtopics": "ESPECIALIDADES PEDIÁTRICAS - ENDOCRINOLOGIA PEDIÁTRICA • ESPECIALIDADES PEDIÁTRICAS - CARDIOLOGIA PEDIÁTRICA", "questionsRef": 6, "relevance": 0.0014, "priority": "Prioridade 4"}, {"module": "26º Módulo", "date": "2026-07-13", "order": 3, "area": "Pediatria", "theme": "Genética e imunologia pediátrica", "subtopics": "ESPECIALIDADES PEDIÁTRICAS - GENÉTICA • ESPECIALIDADES PEDIÁTRICAS - IMUNOLOGIA PEDIÁTRICA", "questionsRef": 3, "relevance": 0.0009, "priority": "Prioridade 4"}, {"module": "26º Módulo", "date": "2026-07-13", "order": 4, "area": "Medicina Preventiva", "theme": "Declaração de óbito e morte encefálica", "subtopics": "DECLARAÇÃO DE ÓBITO • MORTE ENCEFÁLICA", "questionsRef": 9, "relevance": 0.0032, "priority": "Prioridade 4"}, {"module": "27º Módulo", "date": "2026-07-20", "order": 1, "area": "Pediatria", "theme": "Reanimação neonatal, PCR pediátrica e triagem neonatal", "subtopics": "NEONATOLOGIA - REANIMAÇÃO NEONATAL • REANIMAÇÃO CARDIOPULMONAR (RCP) EM PEDIATRIA • TESTES DE TRIAGEM NEONATAL", "questionsRef": 20, "relevance": 0.0032, "priority": "Prioridade 4"}, {"module": "27º Módulo", "date": "2026-07-20", "order": 2, "area": "Clínica Médica", "theme": "Insuficiência hepática aguda e hepatites virais", "subtopics": "INSUFICIÊNCIA HEPÁTICA AGUDA • HEPATITES VIRAIS", "questionsRef": 13, "relevance": 0.0032, "priority": "Prioridade 4"}, {"module": "27º Módulo", "date": "2026-07-20", "order": 3, "area": "Clínica Médica", "theme": "Demências, geriatria e cuidados paliativos", "subtopics": "DEMÊNCIAS / PARKINSONISMO / DELIRIUM • GERIATRIA • CUIDADOS PALIATIVOS", "questionsRef": 17, "relevance": 0.0032, "priority": "Prioridade 4"}, {"module": "27º Módulo", "date": "2026-07-20", "order": 4, "area": "Clínica Médica", "theme": "HIV/aids", "subtopics": "HIV/ AIDS", "questionsRef": 6, "relevance": 0.0027, "priority": "Prioridade 4"}, {"module": "28º Módulo", "date": "2026-07-27", "order": 1, "area": "Clínica Médica", "theme": "Depressão, ansiedade, suicídio e dependência", "subtopics": "DEPRESSÃO E SUICÍDIO • ANSIEDADE E ESTRESSE PÓS-TRAUMÁTICO • DEPENDÊNCIA DE ÁLCOOL, DROGAS E TABACO", "questionsRef": 12, "relevance": 0.0027, "priority": "Prioridade 4"}, {"module": "28º Módulo", "date": "2026-07-27", "order": 2, "area": "Cirurgia Geral", "theme": "Ortopedia, vascular e cirurgia no idoso", "subtopics": "ORTOPEDIA • ESPECIALIDADES CIRÚRGICAS - CIRURGIA VASCULAR • Cirurgia no Idoso", "questionsRef": 11, "relevance": 0.0023, "priority": "Prioridade 4"}, {"module": "28º Módulo", "date": "2026-07-27", "order": 3, "area": "Cirurgia Geral", "theme": "Cirurgias torácica, cardíaca e plástica", "subtopics": "ESPECIALIDADES CIRÚRGICAS - CIRURGIA TORÁCICA • ESPECIALIDADES CIRÚRGICAS - CIRURGIA CARDÍACA • ESPECIALIDADES CIRÚRGICAS - CIRURGIA PLÁSTICA", "questionsRef": 7, "relevance": 0.0014, "priority": "Prioridade 4"}, {"module": "28º Módulo", "date": "2026-07-27", "order": 4, "area": "Pediatria", "theme": "Desnutrição e distúrbios alimentares na infância", "subtopics": "DESNUTRIÇÃO NA INFÂNCIA • DISTÚRBIOS ALIMENTARES NA INFÂNCIA", "questionsRef": 9, "relevance": 0.0023, "priority": "Prioridade 4"}, {"module": "29º Módulo", "date": "2026-08-03", "order": 1, "area": "Pediatria", "theme": "Sepse neonatal, sepse pediátrica e febre sem foco", "subtopics": "NEONATOLOGIA - SEPSE NEONATAL • SEPSE NA PEDIATRIA • MANEJO DA FEBRE E FEBRE SEM SINAIS LOCALIZATÓRIOS", "questionsRef": 8, "relevance": 0.0014, "priority": "Prioridade 4"}, {"module": "29º Módulo", "date": "2026-08-03", "order": 2, "area": "Ginecologia e Obstetrícia", "theme": "Ovário, endoscopia ginecológica e infertilidade", "subtopics": "DOENÇAS BENIGNAS E NEOPLASIAS DE OVÁRIO • ENDOSCOPIA GINECOLÓGICA • INFERTILIDADE", "questionsRef": 9, "relevance": 0.0014, "priority": "Prioridade 4"}, {"module": "29º Módulo", "date": "2026-08-03", "order": 3, "area": "Clínica Médica", "theme": "RCP do adulto", "subtopics": "RCP (REANIMAÇÃO CARDIOPULMONAR)", "questionsRef": 2, "relevance": 0.0009, "priority": "Prioridade 4"}];;
+
+    const suggestionByArea = {
+      "Clínica Médica": "Priorize diagnóstico diferencial, conduta inicial, complicações e pegadinhas de prova.",
+      "Cirurgia Geral": "Foque em indicação cirúrgica, abordagem inicial, complicações e perioperatório.",
+      "Ginecologia e Obstetrícia": "Organize por fluxos de conduta, rastreio, urgências e principais algoritmos.",
+      "Pediatria": "Reforce faixa etária, sinais de gravidade, manejo e diferenças por faixa pediátrica.",
+      "Medicina Preventiva": "Treine indicadores, fórmulas, SUS, prevenção e interpretação de estudos."
+    };
+
+    const legacyStorageKey = "cronograma_residencia_2026_html_v1";
+    const storageKey = "cronograma_residencia_2026_html_v2";
+    const settingsKey = "cronograma_residencia_2026_settings_v1";
+    const safetyBackupKey = "cronograma_residencia_2026_ultimo_backup_seguro";
+    const today = new Date().toISOString().slice(0,10);
+
+    function dateBR(iso) {
+      if (!iso) return "—";
+      const [y,m,d] = iso.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function dateFromISO(iso) {
+      const [y,m,d] = String(iso || today).split("-").map(Number);
+      return new Date(y || new Date().getFullYear(), (m || 1) - 1, d || 1);
+    }
+
+    function isoFromDate(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function addDaysISO(iso, days) {
+      const d = dateFromISO(iso);
+      d.setDate(d.getDate() + days);
+      return isoFromDate(d);
+    }
+
+    function monthKeyFromDate(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    }
+
+    function monthLabel(date) {
+      return date.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+    }
+
+    function dateLongBR(iso) {
+      return dateFromISO(iso).toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[ch]));
+    }
+
+    function uid() {
+      return `custom_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`;
+    }
+
+    function parseNumber(value) {
+      const n = Number(String(value ?? "").replace(",","."));
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+
+    function clampCorrect(correct, total) {
+      return Math.min(parseNumber(correct), parseNumber(total));
+    }
+
+    function accuracyFor(item) {
+      const total = parseNumber(item.questionsTotal);
+      const correct = clampCorrect(item.questionsCorrect, total);
+      if (!total) return null;
+      return (correct / total) * 100;
+    }
+
+    function reviewPlan(item) {
+      const acc = accuracyFor(item);
+      if (acc === null) return { label: "Sem questões", offsets: item.completionDate ? [1,7,30] : [] };
+      if (acc < 50) return { label: "Revisão intensiva", offsets: [1,3,7,14] };
+      if (acc < 70) return { label: "Revisão curta", offsets: [2,7,15,30] };
+      if (acc < 80) return { label: "Revisão intermediária", offsets: [3,10,21,45] };
+      return { label: "Revisão espaçada", offsets: [7,21,45,90] };
+    }
+
+    function reviewDates(item) {
+      if (!item.completionDate) return [];
+      const plan = reviewPlan(item);
+      const base = new Date(item.completionDate + "T00:00:00");
+      return plan.offsets.map(days => {
+        const d = new Date(base);
+        d.setDate(d.getDate() + days);
+        return { label: `${days}d`, date: d.toISOString().slice(0,10), plan: plan.label };
+      });
+    }
+
+    function dueReviewsCount(filteredItems = items) {
+      let count = 0;
+      filteredItems.forEach(item => reviewDates(item).forEach(r => { if (r.date >= today) count++; }));
+      return count;
+    }
+
+    function baseItemState(item, saved = {}) {
+      return {
+        ...item,
+        id: saved.id || item.module + "|" + item.order + "|" + item.theme,
+        custom: !!saved.custom,
+        summaryDone: !!saved.summaryDone,
+        questionsDone: !!saved.questionsDone,
+        ankiDone: !!saved.ankiDone,
+        completionDate: saved.completionDate || "",
+        notes: saved.notes || "",
+        suggestion: saved.suggestion || suggestionByArea[item.area] || "",
+        opened: saved.opened ?? item.order <= 3,
+        questionsTotal: parseNumber(saved.questionsTotal),
+        questionsCorrect: clampCorrect(saved.questionsCorrect, saved.questionsTotal),
+        moduleExtraNote: saved.moduleExtraNote || "",
+        theme: saved.theme || item.theme,
+        subtopics: (saved.subtopics ?? item.subtopics ?? "") === (saved.theme || item.theme) ? "" : (saved.subtopics ?? item.subtopics ?? ""),
+        area: saved.area || item.area,
+        priority: saved.priority || item.priority,
+        date: saved.date || item.date,
+        order: saved.order ?? item.order,
+        questionsRef: saved.questionsRef ?? item.questionsRef,
+        relevance: saved.relevance ?? item.relevance
+      };
+    }
+
+    function normalizeCustomItem(saved) {
+      return {
+        module: saved.module,
+        date: saved.date || today,
+        order: saved.order ?? 999,
+        area: saved.area || "Área extra",
+        theme: saved.theme || "Novo conteúdo",
+        subtopics: (saved.subtopics ?? "") === (saved.theme || "Novo conteúdo") ? "" : (saved.subtopics ?? ""),
+        questionsRef: saved.questionsRef ?? 0,
+        relevance: saved.relevance ?? 0,
+        priority: saved.priority || "Prioridade 4",
+        id: saved.id || uid(),
+        custom: true,
+        summaryDone: !!saved.summaryDone,
+        questionsDone: !!saved.questionsDone,
+        ankiDone: !!saved.ankiDone,
+        completionDate: saved.completionDate || "",
+        notes: saved.notes || "",
+        suggestion: saved.suggestion || "",
+        opened: saved.opened ?? false,
+        questionsTotal: parseNumber(saved.questionsTotal),
+        questionsCorrect: clampCorrect(saved.questionsCorrect, saved.questionsTotal),
+        moduleExtraNote: saved.moduleExtraNote || ""
+      };
+    }
+
+    function readSettings() {
+      try { return JSON.parse(localStorage.getItem(settingsKey) || "{}"); }
+      catch (err) { return {}; }
+    }
+
+    const embeddedSettings = readEmbeddedState()?.settings || {};
+    let appSettings = { ...embeddedSettings, ...readSettings() };
+    let quickMode = appSettings.quickMode || "";
+
+    function saveSettings() {
+      localStorage.setItem(settingsKey, JSON.stringify(appSettings));
+    }
+
+    function readEmbeddedState() {
+      const el = document.getElementById("embedded-state");
+      if (!el || !el.textContent.trim()) return null;
+      try { return JSON.parse(el.textContent); }
+      catch (err) { return null; }
+    }
+
+    function makeSafetySnapshot(reason="backup de segurança") {
+      try {
+        const payload = { exportedAt: new Date().toISOString(), reason, items, calendarTasks, settings: appSettings };
+        localStorage.setItem(safetyBackupKey, JSON.stringify(payload));
+      } catch (err) {}
+    }
+
+    function readStorage() {
+      const v2raw = localStorage.getItem(storageKey);
+      if (v2raw) return JSON.parse(v2raw);
+      const legacyRaw = localStorage.getItem(legacyStorageKey);
+      if (legacyRaw) return JSON.parse(legacyRaw);
+      return readEmbeddedState() || {};
+    }
+
+    function sortItems(list) {
+      return list.sort((a,b) => a.module.localeCompare(b.module, 'pt-BR', {numeric:true}) || Number(a.order)-Number(b.order) || a.theme.localeCompare(b.theme,'pt-BR'));
+    }
+
+    function stateToItems(state) {
+      state = state || {};
+      let mapped;
+      if (Array.isArray(state)) {
+        mapped = state.map(it => it && it.custom ? normalizeCustomItem(it) : baseItemState(it || {}, it || {}));
+      } else if (Array.isArray(state.items)) {
+        mapped = state.items.map(it => it && it.custom ? normalizeCustomItem(it) : baseItemState(it || {}, it || {}));
+      } else {
+        const baseMapped = baseData.map((item) => {
+          const key = item.module + "|" + item.order + "|" + item.theme;
+          return baseItemState(item, state[key] || {});
+        });
+        const customItems = Array.isArray(state.customItems) ? state.customItems.map(normalizeCustomItem) : [];
+        mapped = [...baseMapped, ...customItems];
+      }
+      return sortItems(mapped);
+    }
+
+    function normalizeCalendarTask(saved = {}) {
+      const cleanDate = /^\d{4}-\d{2}-\d{2}$/.test(saved.date || "") ? saved.date : today;
+      const title = String(saved.title || "").trim() || "Nova tarefa";
+      return {
+        id: saved.id || uid(),
+        date: cleanDate,
+        title,
+        type: saved.type || "Estudo",
+        priority: saved.priority || "Normal",
+        module: saved.module || "",
+        notes: saved.notes || "",
+        done: !!saved.done,
+        createdAt: saved.createdAt || new Date().toISOString(),
+        updatedAt: saved.updatedAt || ""
+      };
+    }
+
+    function sortCalendarTasks(list) {
+      return list.sort((a,b) => a.date.localeCompare(b.date) || Number(a.done) - Number(b.done) || a.title.localeCompare(b.title, "pt-BR"));
+    }
+
+    function stateToCalendarTasks(state) {
+      state = state || {};
+      if (Array.isArray(state.calendarTasks)) return sortCalendarTasks(state.calendarTasks.map(normalizeCalendarTask));
+      return [];
+    }
+
+    function loadCalendarTasks() {
+      return stateToCalendarTasks(readStorage() || {});
+    }
+
+    function mergeCalendarTasks(currentList, importedList) {
+      const byId = new Map(currentList.map(task => [task.id, task]));
+      importedList.forEach(imported => {
+        const existing = byId.get(imported.id);
+        if (!existing) {
+          currentList.push(imported);
+          byId.set(imported.id, imported);
+          return;
+        }
+        const merged = {
+          ...existing,
+          ...imported,
+          done: !!(existing.done || imported.done),
+          notes: imported.notes || existing.notes,
+          updatedAt: imported.updatedAt || existing.updatedAt || new Date().toISOString()
+        };
+        const index = currentList.findIndex(task => task.id === imported.id);
+        if (index >= 0) currentList[index] = merged;
+      });
+      return sortCalendarTasks(currentList);
+    }
+
+    function loadState() {
+      return stateToItems(readStorage() || {});
+    }
+
+    function keyForImport(item) {
+      return (item.id || (item.module + "|" + item.order + "|" + item.theme));
+    }
+
+    function progressScoreItem(item) {
+      return parseNumber(item.questionsTotal) + parseNumber(item.questionsCorrect) +
+        ([item.summaryDone, item.questionsDone, item.ankiDone].filter(Boolean).length * 100) +
+        (item.completionDate ? 500 : 0) +
+        ((item.notes || "").trim() ? 10 : 0) +
+        ((item.suggestion || "").trim() ? 5 : 0) +
+        ((item.moduleExtraNote || "").trim() ? 10 : 0);
+    }
+
+    function summarizeProgress(list) {
+      const totalQuestions = list.reduce((sum, item) => sum + parseNumber(item.questionsTotal), 0);
+      const correctQuestions = list.reduce((sum, item) => sum + parseNumber(item.questionsCorrect), 0);
+      const doneTopics = list.filter(item => item.completionDate || [item.summaryDone, item.questionsDone, item.ankiDone].filter(Boolean).length === 3).length;
+      const filledTopics = list.filter(item => parseNumber(item.questionsTotal) > 0).length;
+      return { totalQuestions, correctQuestions, doneTopics, filledTopics, count: list.length };
+    }
+
+    function mergeImportedItems(currentList, importedList) {
+      const byKey = new Map();
+      const byLooseKey = new Map();
+      currentList.forEach((item, index) => {
+        byKey.set(keyForImport(item), { item, index });
+        byLooseKey.set(item.module + "|" + item.order + "|" + item.theme, { item, index });
+      });
+
+      importedList.forEach(imported => {
+        const loose = imported.module + "|" + imported.order + "|" + imported.theme;
+        const target = byKey.get(keyForImport(imported)) || byLooseKey.get(loose);
+        if (!target) {
+          currentList.push(imported);
+          byKey.set(keyForImport(imported), { item: imported, index: currentList.length - 1 });
+          byLooseKey.set(loose, { item: imported, index: currentList.length - 1 });
+          return;
+        }
+
+        const current = target.item;
+        const merged = { ...current };
+        merged.summaryDone = !!(current.summaryDone || imported.summaryDone);
+        merged.questionsDone = !!(current.questionsDone || imported.questionsDone);
+        merged.ankiDone = !!(current.ankiDone || imported.ankiDone);
+        merged.completionDate = current.completionDate || imported.completionDate || "";
+        merged.questionsTotal = Math.max(parseNumber(current.questionsTotal), parseNumber(imported.questionsTotal));
+        merged.questionsCorrect = Math.min(merged.questionsTotal, Math.max(parseNumber(current.questionsCorrect), parseNumber(imported.questionsCorrect)));
+        merged.opened = !!(current.opened || imported.opened);
+        if (!String(current.notes || "").trim() && String(imported.notes || "").trim()) merged.notes = imported.notes;
+        if (!String(current.suggestion || "").trim() && String(imported.suggestion || "").trim()) merged.suggestion = imported.suggestion;
+        if (!String(current.moduleExtraNote || "").trim() && String(imported.moduleExtraNote || "").trim()) merged.moduleExtraNote = imported.moduleExtraNote;
+        currentList[target.index] = merged;
+      });
+      return sortItems(currentList);
+    }
+
+    function extractJsonObjectAt(text, start) {
+      let depth = 0, inString = false, escape = false;
+      for (let i = start; i < text.length; i++) {
+        const ch = text[i];
+        if (inString) {
+          if (escape) escape = false;
+          else if (ch === "\\") escape = true;
+          else if (ch === '"') inString = false;
+        } else {
+          if (ch === '"') inString = true;
+          else if (ch === '{') depth++;
+          else if (ch === '}') {
+            depth--;
+            if (depth === 0) return text.slice(start, i + 1);
+          }
+        }
+      }
+      return "";
+    }
+
+    function parseImportedText(text) {
+      const raw = String(text || "").trim();
+      if (!raw) throw new Error("Nenhum texto para importar.");
+
+      const tryParse = (candidate) => {
+        const parsed = JSON.parse(candidate);
+        if (typeof parsed === "string") return JSON.parse(parsed);
+        return parsed;
+      };
+
+      try { return tryParse(raw); } catch (err) {}
+
+      const embedded = raw.match(/<script[^>]*id=["']embedded-state["'][^>]*>([\s\S]*?)<\/script>/i);
+      if (embedded) {
+        try { return tryParse(embedded[1].trim()); } catch (err) {}
+      }
+
+      const appJsonScripts = [...raw.matchAll(/<script[^>]*type=["']application\/json["'][^>]*>([\s\S]*?)<\/script>/gi)];
+      for (const match of appJsonScripts) {
+        try {
+          const parsed = tryParse(match[1].trim());
+          if (parsed && (Array.isArray(parsed.items) || Array.isArray(parsed.calendarTasks) || Array.isArray(parsed))) return parsed;
+        } catch (err) {}
+      }
+
+      const markerPositions = [raw.indexOf('"items"'), raw.indexOf('"calendarTasks"')].filter(pos => pos !== -1);
+      const markerPos = markerPositions.length ? Math.min(...markerPositions) : -1;
+      if (markerPos !== -1) {
+        for (let start = markerPos; start >= 0; start--) {
+          if (raw[start] !== '{') continue;
+          const candidate = extractJsonObjectAt(raw, start);
+          if (!candidate) continue;
+          try { return tryParse(candidate); } catch (err) {}
+        }
+      }
+
+      const firstBrace = raw.indexOf('{');
+      const lastBrace = raw.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace > firstBrace) {
+        try { return tryParse(raw.slice(firstBrace, lastBrace + 1)); } catch (err) {}
+      }
+
+      throw new Error("Não consegui reconhecer dados válidos nesse conteúdo. Use um backup .json exportado pelo cronograma ou cole o valor salvo no localStorage.");
+    }
+
+    function applyImportedState(state, sourceLabel="dados importados") {
+      const importedItems = stateToItems(state);
+      const importedTasks = stateToCalendarTasks(state);
+      const summary = summarizeProgress(importedItems);
+      const mode = document.getElementById("importMode")?.value || "merge";
+      const actionText = mode === "replace" ? "substituir os dados atuais" : "mesclar mantendo o maior progresso em cada tema";
+      const ok = confirm(
+        `Foram encontrados ${summary.totalQuestions} questões feitas, ${summary.correctQuestions} corretas, ${summary.doneTopics} assuntos concluídos, ${summary.filledTopics} temas com questões preenchidas e ${importedTasks.length} tarefa(s) de agenda.\n\nDeseja ${actionText}?`
+      );
+      if (!ok) return;
+
+      makeSafetySnapshot(`antes de importar de ${sourceLabel}`);
+      if (mode === "replace") {
+        items = importedItems;
+        calendarTasks = importedTasks;
+      } else {
+        items = mergeImportedItems([...items], importedItems);
+        calendarTasks = mergeCalendarTasks([...calendarTasks], importedTasks);
+      }
+      if (state?.settings && typeof state.settings === "object") {
+        appSettings = { ...appSettings, ...state.settings };
+        saveSettings();
+      }
+
+      saveState(`Importação concluída: ${sourceLabel}.`);
+      populateFilters();
+      populateTaskModuleOptions();
+      render();
+      const after = summarizeProgress(items);
+      const status = document.getElementById("importStatus");
+      if (status) status.textContent = `Importado de ${sourceLabel}. Agora o cronograma tem ${after.totalQuestions} questões feitas, ${after.correctQuestions} corretas, ${after.doneTopics} assuntos concluídos e ${calendarTasks.length} tarefa(s) na agenda.`;
+    }
+
+    function findBestLocalStorageProgress() {
+      const candidates = [];
+      const keysToTry = [storageKey, legacyStorageKey];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (/cronograma|residencia|residência|ses/i.test(key) && !keysToTry.includes(key)) keysToTry.push(key);
+      }
+      keysToTry.forEach(key => {
+        try {
+          const value = localStorage.getItem(key);
+          if (!value) return;
+          const state = parseImportedText(value);
+          const list = stateToItems(state);
+          const taskCount = stateToCalendarTasks(state).length;
+          const summary = summarizeProgress(list);
+          const score = summary.totalQuestions + summary.correctQuestions + summary.doneTopics * 500 + summary.filledTopics * 50 + taskCount * 30;
+          if (score > 0) candidates.push({ key, state, summary, score });
+        } catch (err) {}
+      });
+      return candidates.sort((a,b) => b.score - a.score)[0] || null;
+    }
+
+    const initialState = readStorage() || {};
+    let items = stateToItems(initialState);
+    let calendarTasks = stateToCalendarTasks(initialState);
+    let calendarDate = dateFromISO((appSettings.calendarMonth || monthKeyFromDate(dateFromISO(today))) + "-01");
+    let selectedCalendarDate = appSettings.selectedCalendarDate || today;
+    let editingCalendarTaskId = "";
+
+    function saveState(message="Alterações salvas automaticamente.") {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        items: items,
+        calendarTasks: calendarTasks,
+        settings: appSettings
+      };
+      localStorage.setItem(storageKey, JSON.stringify(payload));
+      const saveEl = document.getElementById("saveState");
+      if (saveEl) saveEl.textContent = `${message} ${new Date().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}`;
+      clearTimeout(window.__saveTimer);
+      window.__saveTimer = setTimeout(() => {
+        const el = document.getElementById("saveState");
+        if (el) el.textContent = "Salvo automaticamente neste navegador.";
+      }, 1800);
+    }
+
+    function statusFor(item) {
+      const doneCount = [item.summaryDone, item.questionsDone, item.ankiDone].filter(Boolean).length;
+      if (item.completionDate || doneCount === 3) return "Concluído";
+      if (doneCount > 0 || parseNumber(item.questionsTotal) > 0) return "Em andamento";
+      if (item.date < today) return "Atrasado";
+      return "Planejado";
+    }
+
+    function ensureCompletionDate(item) {
+      const doneCount = [item.summaryDone, item.questionsDone, item.ankiDone].filter(Boolean).length;
+      if (doneCount === 3 && !item.completionDate) item.completionDate = today;
+    }
+
+    function moduleMeta(data) {
+      const byModule = new Map();
+      data.forEach(item => {
+        if (!byModule.has(item.module)) byModule.set(item.module, { date: item.date, rows: [] });
+        byModule.get(item.module).rows.push(item);
+      });
+      return Array.from(byModule.entries()).map(([module, v]) => {
+        const statuses = v.rows.map(statusFor);
+        return {
+          module, date: v.date, rows: v.rows.sort((a,b)=>Number(a.order)-Number(b.order)||a.theme.localeCompare(b.theme,'pt-BR')),
+          done: statuses.filter(s => s==="Concluído").length,
+          late: statuses.filter(s => s==="Atrasado").length,
+          doing: statuses.filter(s => s==="Em andamento").length,
+          extras: v.rows.filter(r => r.custom).length
+        };
+      }).sort((a,b)=>a.date.localeCompare(b.date));
+    }
+
+    function matchesFilters(item) {
+      const q = document.getElementById("search").value.trim().toLowerCase();
+      const area = document.getElementById("filterArea").value;
+      const priority = document.getElementById("filterPriority").value;
+      const status = document.getElementById("filterStatus").value;
+      const module = document.getElementById("filterModule").value;
+
+      const hay = `${item.module} ${item.area} ${item.theme} ${item.subtopics} ${item.notes || ''}`.toLowerCase();
+      if (q && !hay.includes(q)) return false;
+      if (area && item.area !== area) return false;
+      if (priority && item.priority !== priority) return false;
+      if (status && statusFor(item) !== status) return false;
+      if (module && item.module !== module) return false;
+
+      if (quickMode === "lowAccuracy" && !(accuracyFor(item) !== null && accuracyFor(item) < 70)) return false;
+      if (quickMode === "reviewSoon" && !hasUpcomingReview(item, 14)) return false;
+      if (quickMode === "hideDone" && statusFor(item) === "Concluído") return false;
+      return true;
+    }
+
+    function hasUpcomingReview(item, daysAhead=14) {
+      const until = new Date(today + "T00:00:00");
+      until.setDate(until.getDate() + daysAhead);
+      const untilISO = until.toISOString().slice(0,10);
+      return reviewDates(item).some(r => r.date >= today && r.date <= untilISO);
+    }
+
+    function truncateText(text, max=80) {
+      const value = String(text || "").replace(/\s+/g, " ").trim();
+      return value.length > max ? value.slice(0, max - 1) + "…" : value;
+    }
+
+    function priorityWeight(priority) {
+      const n = Number(String(priority || "4").match(/(\d)/)?.[1] || 4);
+      return Math.max(0, 5 - n) * 15;
+    }
+
+    function focusReason(item) {
+      const reasons = [];
+      const st = statusFor(item);
+      const acc = accuracyFor(item);
+      if (st === "Atrasado") reasons.push("atrasado");
+      if (st === "Em andamento") reasons.push("em andamento");
+      if (acc !== null && acc < 70) reasons.push(`acerto ${Math.round(acc)}%`);
+      if (hasUpcomingReview(item, 14)) reasons.push("revisão próxima");
+      if (parseNumber(item.questionsTotal) === 0) reasons.push("sem questões feitas");
+      return reasons.slice(0, 3).join(" • ") || item.priority;
+    }
+
+    function focusScore(item) {
+      const st = statusFor(item);
+      const acc = accuracyFor(item);
+      let score = priorityWeight(item.priority) + parseNumber(item.questionsRef);
+      if (st === "Atrasado") score += 120;
+      if (st === "Em andamento") score += 70;
+      if (hasUpcomingReview(item, 14)) score += 65;
+      if (acc !== null && acc < 50) score += 80;
+      else if (acc !== null && acc < 70) score += 50;
+      if (parseNumber(item.questionsTotal) === 0) score += 20;
+      return score;
+    }
+
+    function buildSummaryText(filteredItems = items) {
+      const summary = summarizeProgress(filteredItems);
+      const done = filteredItems.filter(i => statusFor(i)==="Concluído").length;
+      const doing = filteredItems.filter(i => statusFor(i)==="Em andamento").length;
+      const late = filteredItems.filter(i => statusFor(i)==="Atrasado").length;
+      const acc = summary.totalQuestions ? Math.round((summary.correctQuestions / summary.totalQuestions) * 100) : 0;
+      return [
+        "Resumo do cronograma/visão atual:",
+        `- Assuntos visíveis: ${filteredItems.length}`,
+        `- Concluídos: ${done}`,
+        `- Em andamento: ${doing}`,
+        `- Atrasados: ${late}`,
+        `- Questões feitas: ${summary.totalQuestions}`,
+        `- Questões corretas: ${summary.correctQuestions}`,
+        `- Acerto geral: ${acc}%`,
+        `- Temas com questões preenchidas: ${summary.filledTopics}`
+      ].join("\n");
+    }
+
+    function renderOrganizer(filteredItems) {
+      const panel = document.getElementById("organizerPanel");
+      if (!panel) return;
+      const summary = summarizeProgress(filteredItems);
+      const done = filteredItems.filter(i => statusFor(i)==="Concluído").length;
+      const doing = filteredItems.filter(i => statusFor(i)==="Em andamento").length;
+      const late = filteredItems.filter(i => statusFor(i)==="Atrasado").length;
+      const lowAcc = filteredItems.filter(i => accuracyFor(i) !== null && accuracyFor(i) < 70).length;
+      const acc = summary.totalQuestions ? Math.round((summary.correctQuestions / summary.totalQuestions) * 100) : 0;
+
+      const quickSummary = document.getElementById("quickSummary");
+      if (quickSummary) {
+        quickSummary.innerHTML = `
+          <div class="org-list-item"><strong>${summary.totalQuestions}</strong><span class="muted">questões feitas na visão atual</span></div>
+          <div class="org-list-item"><strong>${acc}%</strong><span class="muted">acerto geral da visão atual</span></div>
+          <div class="org-list-item"><strong>${done} concluídos • ${doing} em andamento • ${late} atrasados</strong><span class="muted">status dos assuntos visíveis</span></div>
+          <div class="org-list-item"><strong>${lowAcc}</strong><span class="muted">temas com acerto abaixo de 70%</span></div>
+        `;
+      }
+
+      const goalInput = document.getElementById("questionGoal");
+      const goalText = document.getElementById("questionGoalText");
+      const goalBar = document.getElementById("questionGoalBar");
+      const goal = parseNumber(appSettings.questionGoal);
+      if (goalInput && document.activeElement !== goalInput) goalInput.value = goal || "";
+      if (goalText && goalBar) {
+        if (!goal) {
+          goalText.textContent = "Defina uma meta para acompanhar.";
+          goalBar.style.width = "0%";
+        } else {
+          const pct = Math.min(100, Math.round((summary.totalQuestions / goal) * 100));
+          goalText.textContent = `${summary.totalQuestions}/${goal} questões (${pct}%) na visão atual.`;
+          goalBar.style.width = pct + "%";
+        }
+      }
+
+      const areaMap = document.getElementById("areaMap");
+      if (areaMap) {
+        const byArea = new Map();
+        filteredItems.forEach(item => {
+          if (!byArea.has(item.area)) byArea.set(item.area, { total: 0, done: 0, questions: 0 });
+          const entry = byArea.get(item.area);
+          entry.total += 1;
+          entry.done += statusFor(item) === "Concluído" ? 1 : 0;
+          entry.questions += parseNumber(item.questionsTotal);
+        });
+        const rows = Array.from(byArea.entries()).sort((a,b) => b[1].questions - a[1].questions || a[0].localeCompare(b[0], 'pt-BR'));
+        areaMap.innerHTML = rows.length ? rows.map(([area, v]) => {
+          const pct = v.total ? Math.round((v.done / v.total) * 100) : 0;
+          return `<div class="org-list-item"><strong>${area}</strong><span class="muted">${v.done}/${v.total} concluídos • ${v.questions} questões</span><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>`;
+        }).join("") : '<div class="muted">Nenhuma área visível nos filtros atuais.</div>';
+      }
+
+      const focusList = document.getElementById("focusList");
+      if (focusList) {
+        const candidates = filteredItems
+          .filter(i => statusFor(i) !== "Concluído")
+          .sort((a,b) => focusScore(b) - focusScore(a))
+          .slice(0, 8);
+        focusList.innerHTML = candidates.length ? candidates.map(item => `
+          <div class="org-list-item">
+            <strong>${item.module} — ${truncateText(item.theme, 92)}</strong>
+            <span class="muted">${focusReason(item)} • ${item.priority}</span>
+            <button type="button" data-jump-id="${item.id}">Abrir este tema</button>
+          </div>
+        `).join("") : '<div class="muted">Nada pendente nos filtros atuais.</div>';
+      }
+
+      const upcoming = document.getElementById("upcomingReviews");
+      if (upcoming) {
+        const entries = [];
+        filteredItems.forEach(item => reviewDates(item).forEach(r => {
+          if (r.date >= today) entries.push({ item, review: r });
+        }));
+        entries.sort((a,b) => a.review.date.localeCompare(b.review.date) || focusScore(b.item) - focusScore(a.item));
+        upcoming.innerHTML = entries.slice(0, 10).map(({item, review}) => `
+          <div class="org-list-item">
+            <strong>${dateBR(review.date)} — ${item.module}</strong>
+            <span class="muted">${truncateText(item.theme, 98)} • ${review.plan}</span>
+            <button type="button" data-jump-id="${item.id}">Abrir revisão</button>
+          </div>
+        `).join("") || '<div class="muted">Nenhuma revisão futura nos filtros atuais.</div>';
+      }
+
+      document.querySelectorAll("[data-quick]").forEach(btn => {
+        const currentStatus = document.getElementById("filterStatus")?.value || "";
+        const active = btn.dataset.quick === quickMode ||
+          (btn.dataset.quick === "late" && currentStatus === "Atrasado") ||
+          (btn.dataset.quick === "doing" && currentStatus === "Em andamento");
+        btn.classList.toggle("active", active);
+      });
+      bindOrganizerJumpButtons();
+    }
+
+    function bindOrganizerJumpButtons() {
+      document.querySelectorAll("[data-jump-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const item = items.find(i => i.id === btn.dataset.jumpId);
+          if (!item) return;
+          items.forEach(i => { if (i.module === item.module) i.opened = true; });
+          saveState("Módulo aberto para foco.");
+          render();
+          setTimeout(() => {
+            const row = document.querySelector(`tr[data-id="${CSS.escape(item.id)}"]`);
+            if (row) row.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 80);
+        });
+      });
+    }
+
+    function tasksForDate(iso) {
+      return calendarTasks.filter(task => task.date === iso).sort((a,b) => Number(a.done) - Number(b.done) || a.title.localeCompare(b.title, "pt-BR"));
+    }
+
+    function moduleNamesForDate(iso) {
+      return [...new Set(items.filter(item => item.date === iso).map(item => item.module))].sort((a,b)=>a.localeCompare(b, "pt-BR", {numeric:true}));
+    }
+
+    function reviewEntriesForDate(iso) {
+      const entries = [];
+      items.forEach(item => reviewDates(item).forEach(review => {
+        if (review.date === iso) entries.push({ item, review });
+      }));
+      return entries;
+    }
+
+    function setCalendarPanelCollapsed(collapsed) {
+      const panel = document.getElementById("calendarPanel");
+      const btn = document.getElementById("toggleCalendarPanel");
+      if (!panel || !btn) return;
+      panel.classList.toggle("is-collapsed", !!collapsed);
+      btn.textContent = collapsed ? "Expandir agenda" : "Minimizar agenda";
+      btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      appSettings.calendarCollapsed = !!collapsed;
+      saveSettings();
+    }
+
+    function populateTaskModuleOptions() {
+      const select = document.getElementById("taskModule");
+      if (!select) return;
+      const current = select.value;
+      const modules = [...new Set(items.map(item => item.module))].sort((a,b)=>a.localeCompare(b, "pt-BR", {numeric:true}));
+      select.innerHTML = '<option value="">Sem módulo vinculado</option>' + modules.map(module => `<option value="${escapeHTML(module)}">${escapeHTML(module)}</option>`).join("");
+      select.value = modules.includes(current) ? current : "";
+    }
+
+    function resetTaskForm(keepFocus=false) {
+      editingCalendarTaskId = "";
+      const title = document.getElementById("taskTitle");
+      const date = document.getElementById("taskDate");
+      const type = document.getElementById("taskType");
+      const priority = document.getElementById("taskPriority");
+      const module = document.getElementById("taskModule");
+      const notes = document.getElementById("taskNotes");
+      const cancel = document.getElementById("cancelTaskEdit");
+      if (title) title.value = "";
+      if (date) date.value = selectedCalendarDate;
+      if (type) type.value = "Estudo";
+      if (priority) priority.value = "Normal";
+      if (module) module.value = moduleNamesForDate(selectedCalendarDate)[0] || "";
+      if (notes) notes.value = "";
+      if (cancel) cancel.classList.add("hidden");
+      if (keepFocus && title) title.focus();
+    }
+
+    function fillTaskForm(task) {
+      if (!task) return;
+      editingCalendarTaskId = task.id;
+      document.getElementById("taskTitle").value = task.title || "";
+      document.getElementById("taskDate").value = task.date || selectedCalendarDate;
+      document.getElementById("taskType").value = task.type || "Estudo";
+      document.getElementById("taskPriority").value = task.priority || "Normal";
+      document.getElementById("taskModule").value = task.module || "";
+      document.getElementById("taskNotes").value = task.notes || "";
+      document.getElementById("cancelTaskEdit").classList.remove("hidden");
+      document.getElementById("taskTitle").focus();
+    }
+
+    function saveTaskFromForm(event) {
+      event.preventDefault();
+      const title = document.getElementById("taskTitle").value.trim();
+      if (!title) return;
+      const taskDate = document.getElementById("taskDate").value || selectedCalendarDate;
+      const existing = calendarTasks.find(task => task.id === editingCalendarTaskId);
+      const nextTask = normalizeCalendarTask({
+        ...existing,
+        id: existing?.id || uid(),
+        title,
+        date: taskDate,
+        type: document.getElementById("taskType").value,
+        priority: document.getElementById("taskPriority").value,
+        module: document.getElementById("taskModule").value,
+        notes: document.getElementById("taskNotes").value,
+        done: existing?.done || false,
+        createdAt: existing?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+
+      if (existing) {
+        calendarTasks = calendarTasks.map(task => task.id === existing.id ? nextTask : task);
+      } else {
+        calendarTasks.push(nextTask);
+      }
+      calendarTasks = sortCalendarTasks(calendarTasks);
+      selectedCalendarDate = nextTask.date;
+      calendarDate = dateFromISO(nextTask.date.slice(0,7) + "-01");
+      appSettings.selectedCalendarDate = selectedCalendarDate;
+      appSettings.calendarMonth = monthKeyFromDate(calendarDate);
+      saveSettings();
+      saveState("Agenda salva automaticamente.");
+      resetTaskForm();
+      renderCalendar();
+    }
+
+    function toggleCalendarTaskDone(id, done) {
+      calendarTasks = calendarTasks.map(task => task.id === id ? { ...task, done: !!done, updatedAt: new Date().toISOString() } : task);
+      saveState("Agenda salva automaticamente.");
+      renderCalendar();
+    }
+
+    function deleteCalendarTask(id) {
+      const task = calendarTasks.find(item => item.id === id);
+      if (!task) return;
+      if (!confirm(`Excluir a tarefa "${task.title}"?`)) return;
+      calendarTasks = calendarTasks.filter(item => item.id !== id);
+      if (editingCalendarTaskId === id) resetTaskForm();
+      saveState("Tarefa removida da agenda.");
+      renderCalendar();
+    }
+
+    function moveCalendarTask(id, date) {
+      const task = calendarTasks.find(item => item.id === id);
+      if (!task || !date) return;
+      calendarTasks = calendarTasks.map(item => item.id === id ? { ...item, date, updatedAt: new Date().toISOString() } : item);
+      selectedCalendarDate = date;
+      appSettings.selectedCalendarDate = date;
+      saveSettings();
+      saveState("Tarefa movida na agenda.");
+      renderCalendar();
+    }
+
+    function jumpToModule(moduleName) {
+      if (!moduleName) return;
+      items.forEach(item => { if (item.module === moduleName) item.opened = true; });
+      saveState("Módulo aberto pela agenda.");
+      render();
+      setTimeout(() => {
+        const target = document.querySelector(`details.module[data-module="${CSS.escape(moduleName)}"]`);
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 80);
+    }
+
+    function renderSelectedDay() {
+      const label = document.getElementById("selectedDayLabel");
+      const meta = document.getElementById("selectedDayMeta");
+      const list = document.getElementById("selectedDayTasks");
+      if (!label || !meta || !list) return;
+
+      const dayTasks = tasksForDate(selectedCalendarDate);
+      const modules = moduleNamesForDate(selectedCalendarDate);
+      const reviews = reviewEntriesForDate(selectedCalendarDate);
+      label.textContent = dateLongBR(selectedCalendarDate);
+      meta.textContent = `${dayTasks.filter(task => !task.done).length} pendente(s) · ${modules.length} módulo(s) · ${reviews.length} revisão(ões)`;
+
+      list.innerHTML = dayTasks.length ? dayTasks.map(task => `
+        <div class="task-item" data-task-card="${escapeHTML(task.id)}">
+          <div class="task-row">
+            <label class="check"><input data-task-done="${escapeHTML(task.id)}" type="checkbox" ${task.done ? "checked" : ""}>Concluída</label>
+            <div class="task-actions">
+              <button type="button" data-edit-task="${escapeHTML(task.id)}">Editar</button>
+              ${task.module ? `<button type="button" data-jump-module="${escapeHTML(task.module)}">Abrir módulo</button>` : ""}
+              <button type="button" data-delete-task="${escapeHTML(task.id)}">Excluir</button>
+            </div>
+          </div>
+          <div>
+            <div class="task-title">${escapeHTML(task.title)}</div>
+            <div class="task-meta">${escapeHTML(task.type)} · ${escapeHTML(task.priority)}${task.module ? " · " + escapeHTML(task.module) : ""}</div>
+            ${task.notes ? `<div class="task-meta">${escapeHTML(task.notes)}</div>` : ""}
+          </div>
+        </div>
+      `).join("") : '<div class="muted">Sem tarefas neste dia.</div>';
+
+      list.querySelectorAll("[data-task-done]").forEach(input => {
+        input.addEventListener("change", () => toggleCalendarTaskDone(input.dataset.taskDone, input.checked));
+      });
+      list.querySelectorAll("[data-edit-task]").forEach(btn => {
+        btn.addEventListener("click", () => fillTaskForm(calendarTasks.find(task => task.id === btn.dataset.editTask)));
+      });
+      list.querySelectorAll("[data-delete-task]").forEach(btn => {
+        btn.addEventListener("click", () => deleteCalendarTask(btn.dataset.deleteTask));
+      });
+      list.querySelectorAll("[data-jump-module]").forEach(btn => {
+        btn.addEventListener("click", () => jumpToModule(btn.dataset.jumpModule));
+      });
+    }
+
+    function renderCalendarSuggestions() {
+      const container = document.getElementById("calendarSuggestions");
+      if (!container) return;
+      const overdue = calendarTasks.filter(task => !task.done && task.date < today).sort((a,b)=>a.date.localeCompare(b.date)).slice(0, 3);
+      const todayTasks = tasksForDate(today).filter(task => !task.done);
+      const nextModule = moduleMeta(items).find(mod => mod.date >= today && mod.done < mod.rows.length);
+      const nextReview = [];
+      items.forEach(item => reviewDates(item).forEach(review => {
+        if (review.date >= today) nextReview.push({ item, review });
+      }));
+      nextReview.sort((a,b)=>a.review.date.localeCompare(b.review.date));
+
+      container.innerHTML = `
+        <div class="calendar-suggestion-card">
+          <strong>Hoje</strong>
+          <div class="task-meta">${todayTasks.length ? todayTasks.slice(0, 3).map(task => escapeHTML(task.title)).join(" · ") : "Nenhuma tarefa pendente para hoje."}</div>
+        </div>
+        <div class="calendar-suggestion-card">
+          <strong>Pendências</strong>
+          <div class="task-meta">${overdue.length ? overdue.map(task => `${dateBR(task.date)}: ${escapeHTML(task.title)}`).join(" · ") : "Sem tarefas atrasadas na agenda."}</div>
+        </div>
+        <div class="calendar-suggestion-card">
+          <strong>Próximo foco</strong>
+          <div class="task-meta">${nextModule ? `${dateBR(nextModule.date)} · ${escapeHTML(nextModule.module)} · ${nextModule.rows.length} assunto(s)` : (nextReview[0] ? `${dateBR(nextReview[0].review.date)} · ${escapeHTML(nextReview[0].item.module)} · revisão` : "Sem foco futuro encontrado.")}</div>
+        </div>
+      `;
+    }
+
+    function selectCalendarDate(iso) {
+      selectedCalendarDate = iso;
+      calendarDate = dateFromISO(iso.slice(0,7) + "-01");
+      appSettings.selectedCalendarDate = selectedCalendarDate;
+      appSettings.calendarMonth = monthKeyFromDate(calendarDate);
+      saveSettings();
+      resetTaskForm();
+      renderCalendar();
+    }
+
+    function changeCalendarMonth(delta) {
+      calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + delta, 1);
+      appSettings.calendarMonth = monthKeyFromDate(calendarDate);
+      saveSettings();
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById("calendarGrid");
+      const monthPicker = document.getElementById("calendarMonthPicker");
+      const subtitle = document.getElementById("calendarSubtitle");
+      if (!grid || !monthPicker) return;
+
+      const monthKey = monthKeyFromDate(calendarDate);
+      monthPicker.value = monthKey;
+      const first = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
+      const start = new Date(first);
+      start.setDate(first.getDate() - first.getDay());
+
+      const monthTasks = calendarTasks.filter(task => task.date.slice(0,7) === monthKey);
+      const pendingMonth = monthTasks.filter(task => !task.done).length;
+      if (subtitle) {
+        subtitle.textContent = `${monthLabel(calendarDate)} · ${monthTasks.length} tarefa(s) · ${pendingMonth} pendente(s)`;
+      }
+
+      const cells = [];
+      for (let i = 0; i < 42; i++) {
+        const cellDate = new Date(start);
+        cellDate.setDate(start.getDate() + i);
+        const iso = isoFromDate(cellDate);
+        const dayTasks = tasksForDate(iso);
+        const modules = moduleNamesForDate(iso);
+        const reviews = reviewEntriesForDate(iso);
+        const outside = cellDate.getMonth() !== calendarDate.getMonth();
+        const tags = [
+          modules.length ? `<div class="calendar-tag">${escapeHTML(modules.slice(0,2).join(" · "))}</div>` : "",
+          reviews.length ? `<div class="calendar-tag">${reviews.length} revisão(ões)</div>` : ""
+        ].filter(Boolean).join("");
+        const taskChips = dayTasks.slice(0, 3).map(task => `
+          <div class="calendar-task-chip ${task.done ? "is-done" : ""}" draggable="true" data-task-chip="${escapeHTML(task.id)}" title="${escapeHTML(task.title)}">${escapeHTML(task.title)}</div>
+        `).join("");
+        cells.push(`
+          <div class="calendar-cell ${outside ? "is-outside" : ""} ${iso === today ? "is-today" : ""} ${iso === selectedCalendarDate ? "is-selected" : ""}" data-date="${iso}" tabindex="0">
+            <div class="day-top"><span>${cellDate.getDate()}</span>${dayTasks.length ? `<span class="day-count">${dayTasks.length}</span>` : ""}</div>
+            <div class="day-tags">
+              ${tags}
+              ${taskChips}
+              ${dayTasks.length > 3 ? `<div class="more-chip">+${dayTasks.length - 3} tarefa(s)</div>` : ""}
+            </div>
+          </div>
+        `);
+      }
+      grid.innerHTML = cells.join("");
+
+      grid.querySelectorAll(".calendar-cell").forEach(cell => {
+        cell.addEventListener("click", () => selectCalendarDate(cell.dataset.date));
+        cell.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            selectCalendarDate(cell.dataset.date);
+          }
+        });
+        cell.addEventListener("dragover", event => event.preventDefault());
+        cell.addEventListener("drop", event => {
+          event.preventDefault();
+          moveCalendarTask(event.dataTransfer.getData("text/calendar-task"), cell.dataset.date);
+        });
+      });
+
+      grid.querySelectorAll("[data-task-chip]").forEach(chip => {
+        chip.addEventListener("dragstart", event => {
+          event.dataTransfer.setData("text/calendar-task", chip.dataset.taskChip);
+        });
+        chip.addEventListener("click", event => {
+          event.stopPropagation();
+          const task = calendarTasks.find(item => item.id === chip.dataset.taskChip);
+          if (task) {
+            selectedCalendarDate = task.date;
+            calendarDate = dateFromISO(task.date.slice(0,7) + "-01");
+            appSettings.selectedCalendarDate = selectedCalendarDate;
+            appSettings.calendarMonth = monthKeyFromDate(calendarDate);
+            saveSettings();
+            renderCalendar();
+            fillTaskForm(task);
+          }
+        });
+      });
+
+      renderSelectedDay();
+      renderCalendarSuggestions();
+    }
+
+    function renderStats(filteredItems) {
+      const total = filteredItems.length;
+      const done = filteredItems.filter(i => statusFor(i)==="Concluído").length;
+      const doing = filteredItems.filter(i => statusFor(i)==="Em andamento").length;
+      const late = filteredItems.filter(i => statusFor(i)==="Atrasado").length;
+      const taskDone = filteredItems.reduce((acc,i)=>acc + [i.summaryDone,i.questionsDone,i.ankiDone].filter(Boolean).length,0);
+      const taskTotal = filteredItems.length * 3 || 1;
+      const totalQuestions = filteredItems.reduce((acc,i)=>acc + parseNumber(i.questionsTotal),0);
+      const totalCorrect = filteredItems.reduce((acc,i)=>acc + clampCorrect(i.questionsCorrect, i.questionsTotal),0);
+      const topicsWithQuestions = filteredItems.filter(i => parseNumber(i.questionsTotal) > 0).length;
+      const goalHits = filteredItems.filter(i => accuracyFor(i) !== null && accuracyFor(i) >= 80).length;
+      const extras = new Set(filteredItems.filter(i => i.custom).map(i => i.module)).size;
+
+      document.getElementById("statTotal").textContent = total;
+      document.getElementById("statDone").textContent = done;
+      document.getElementById("statDoing").textContent = doing;
+      document.getElementById("statLate").textContent = late;
+      document.getElementById("statTasks").textContent = Math.round((taskDone/taskTotal)*100) + "%";
+      document.getElementById("statQuestions").textContent = totalQuestions;
+      document.getElementById("statCorrect").textContent = totalCorrect;
+      document.getElementById("statAccuracy").textContent = totalQuestions ? Math.round((totalCorrect/totalQuestions)*100) + "%" : "0%";
+      document.getElementById("statReviews").textContent = dueReviewsCount(filteredItems);
+      document.getElementById("statFilledTopics").textContent = topicsWithQuestions;
+      document.getElementById("statGoal").textContent = `${goalHits}/${topicsWithQuestions}`;
+      document.getElementById("statExtras").textContent = extras;
+    }
+
+    function accuracyText(item) {
+      const acc = accuracyFor(item);
+      if (acc === null) return '<span class="muted">Preencha as questões.</span>';
+      const cls = acc >= 80 ? 'good-text' : (acc < 50 ? 'danger-text' : '');
+      return `<strong class="${cls}">${Math.round(acc)}%</strong>`;
+    }
+
+    function rowHTML(item) {
+      const status = statusFor(item);
+      const statusClass = {
+        "Concluído":"status-concluido",
+        "Atrasado":"status-atrasado",
+        "Em andamento":"status-em-andamento",
+        "Planejado":"status-planejado"
+      }[status];
+      const priorityNum = String(item.priority).match(/(\d)/)?.[1] || "4";
+      const reviews = reviewDates(item);
+      const plan = reviewPlan(item);
+      const total = parseNumber(item.questionsTotal);
+      const correct = clampCorrect(item.questionsCorrect, total);
+      return `
+        <tr class="${statusClass}" data-id="${item.id}">
+          <td data-label="Ordem">${item.custom ? 'Extra' : item.order}</td>
+          <td data-label="Grande área">
+            <select class="mini-select" data-field="area">
+              ${["Clínica Médica","Cirurgia Geral","Ginecologia e Obstetrícia","Pediatria","Medicina Preventiva","Área extra"].map(a => `<option ${item.area===a?'selected':''}>${a}</option>`).join('')}
+            </select>
+          </td>
+          <td data-label="Tema">
+            <textarea class="editable short" data-field="theme" placeholder="Tema editável">${item.theme}</textarea>
+            <textarea class="editable" data-field="subtopics" placeholder="Subassuntos / detalhes editáveis">${(item.subtopics && item.subtopics !== item.theme) ? item.subtopics : ''}</textarea>
+          </td>
+          <td data-label="Relevância">
+            <div><strong>${item.questionsRef ?? "—"}</strong> questões-ref</div>
+            <div class="muted">${((item.relevance||0)*100).toFixed(2).replace('.',',')}%</div>
+          </td>
+          <td data-label="Prioridade">
+            <select class="mini-select" data-field="priority">
+              ${["Prioridade 1","Prioridade 2","Prioridade 3","Prioridade 4"].map(p => `<option ${item.priority===p?'selected':''}>${p}</option>`).join('')}
+            </select>
+          </td>
+          <td data-label="Execução">
+            <div class="checkwrap">
+              <label class="check"><input data-field="summaryDone" type="checkbox" ${item.summaryDone ? "checked" : ""}>Resumo</label>
+              <label class="check"><input data-field="questionsDone" type="checkbox" ${item.questionsDone ? "checked" : ""}>Questões</label>
+              <label class="check"><input data-field="ankiDone" type="checkbox" ${item.ankiDone ? "checked" : ""}>Anki</label>
+            </div>
+          </td>
+          <td data-label="Questões e acerto">
+            <div class="stats-stack">
+              <div class="line"><span>Feitas</span><input class="mini-input" data-field="questionsTotal" type="number" min="0" value="${total}"></div>
+              <div class="line"><span>Corretas</span><input class="mini-input" data-field="questionsCorrect" type="number" min="0" max="${Math.max(total,0)}" value="${correct}"></div>
+              <div class="line"><span>Acerto</span><span>${accuracyText(item)}</span></div>
+            </div>
+          </td>
+          <td data-label="Status / Data">
+            <input class="mini-input completion-input" data-field="completionDate" type="date" value="${item.completionDate || ""}">
+            <div style="margin-top:8px;"><span class="status-tag">${status}</span></div>
+          </td>
+          <td data-label="Revisões">
+            <div class="smart-badge">${plan.label}</div>
+            <div class="smart-review">
+              ${reviews.length ? reviews.map(r => `<div><strong>${r.label}:</strong> ${dateBR(r.date)}</div>`).join("") : '<span class="muted">Conclua o assunto e/ou preencha questões para gerar revisões.</span>'}
+            </div>
+          </td>
+          <td data-label="Sugestão de foco">
+            <textarea class="editable" data-field="suggestion" placeholder="Sugestão de estudo...">${item.suggestion || ""}</textarea>
+          </td>
+          <td data-label="Observações">
+            <textarea class="editable" data-field="notes" placeholder="Observações, dificuldades, meta de revisão...">${item.notes || ""}</textarea>
+            ${item.custom ? '<button class="mini-btn" data-action="delete-row" style="margin-top:8px;background:#fff1f2;border-color:#fecdd3;color:#be123c;">Excluir conteúdo extra</button>' : ''}
+          </td>
+        </tr>
+      `;
+    }
+
+    function moduleExtraNote(moduleName) {
+      const existing = items.find(i => i.module === moduleName && i.moduleExtraNote);
+      return existing?.moduleExtraNote || "";
+    }
+
+    function render() {
+      items.forEach(ensureCompletionDate);
+      const filtered = items.filter(matchesFilters);
+      renderStats(filtered);
+      renderOrganizer(filtered);
+      renderCalendar();
+
+      const modulesContainer = document.getElementById("modules");
+      const modules = moduleMeta(filtered);
+      modulesContainer.innerHTML = modules.map((mod) => {
+        const orig = items.find(i => i.module === mod.module);
+        const openAttr = orig?.opened ? "open" : "";
+        return `
+          <details class="module" data-module="${mod.module}" ${openAttr}>
+            <summary>
+              <div class="summary-left">
+                <span class="module-badge">${mod.module}</span>
+                <span class="module-date">${dateBR(mod.date)}</span>
+                <span class="muted">${mod.rows.length} assunto(s)</span>
+              </div>
+              <div class="summary-right">
+                <span class="mini">✅ ${mod.done}</span>
+                <span class="mini">🟡 ${mod.late}</span>
+                <span class="mini">🔵 ${mod.doing}</span>
+                <span class="mini">➕ ${mod.extras}</span>
+              </div>
+            </summary>
+            <div class="module-body">
+              <div class="module-tools">
+                <div class="hint">Você pode editar os temas da semana e adicionar conteúdos extras sem perder o restante do módulo.</div>
+                <button class="mini-btn" data-action="add-row" data-module="${mod.module}">Adicionar conteúdo extra ao módulo</button>
+              </div>
+              <div style="margin:0 4px 14px;">
+                <textarea class="editable" data-module-note="${mod.module}" placeholder="Espaço extra do módulo: anote um conteúdo adicional, ajuste da semana, meta ou observação geral do módulo.">${moduleExtraNote(mod.module)}</textarea>
+              </div>
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Ordem</th>
+                      <th>Grande área</th>
+                      <th>Tema integrado / Subassuntos</th>
+                      <th>Relevância</th>
+                      <th>Prioridade</th>
+                      <th>Execução</th>
+                      <th>Questões</th>
+                      <th>Status / Data</th>
+                      <th>Revisões</th>
+                      <th>Sugestão</th>
+                      <th>Observações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${mod.rows.map(rowHTML).join("")}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+        `;
+      }).join("");
+
+      document.querySelectorAll("details.module").forEach(el => {
+        el.addEventListener("toggle", () => {
+          const mod = el.dataset.module;
+          items.forEach(item => {
+            if (item.module === mod) item.opened = el.open;
+          });
+          saveState();
+        });
+      });
+
+      bindRowEvents();
+    }
+
+    function updateModuleNote(moduleName, value) {
+      items.filter(i => i.module === moduleName).forEach(i => i.moduleExtraNote = value);
+    }
+
+    function bindRowEvents() {
+      document.querySelectorAll("tr[data-id]").forEach(row => {
+        const id = row.dataset.id;
+        const item = items.find(i => i.id === id);
+        row.querySelectorAll("input, textarea, select, button[data-action='delete-row']").forEach(control => {
+          const action = control.dataset.action;
+          if (action === 'delete-row') {
+            control.addEventListener('click', () => {
+              items = items.filter(i => i.id !== id);
+              saveState('Conteúdo extra removido.');
+              populateFilters();
+              populateTaskModuleOptions();
+              render();
+            });
+            return;
+          }
+          const field = control.dataset.field;
+          const handler = () => {
+            if (!field) return;
+            const isTextarea = control.tagName === "TEXTAREA";
+            if (control.type === "checkbox") item[field] = control.checked;
+            else if (field === 'questionsTotal') {
+              item.questionsTotal = parseNumber(control.value);
+              item.questionsCorrect = clampCorrect(item.questionsCorrect, item.questionsTotal);
+            } else if (field === 'questionsCorrect') {
+              item.questionsCorrect = clampCorrect(control.value, item.questionsTotal);
+            } else {
+              item[field] = control.value;
+            }
+            if (field === 'subtopics' && (item.subtopics || '').trim() === (item.theme || '').trim()) item.subtopics = '';
+            if (field === 'theme' && (item.subtopics || '').trim() === control.value.trim()) item.subtopics = '';
+            if (field === 'area' && !item.suggestion) item.suggestion = suggestionByArea[item.area] || item.suggestion;
+            ensureCompletionDate(item);
+            saveState();
+            if (!isTextarea) render();
+          };
+          const eventName = (control.tagName === "TEXTAREA" || control.type === 'number') ? "input" : "change";
+          control.addEventListener(eventName, handler);
+          if (control.tagName === "TEXTAREA") {
+            control.addEventListener('blur', () => render());
+          }
+        });
+      });
+
+      document.querySelectorAll("[data-module-note]").forEach(el => {
+        el.addEventListener('input', () => {
+          updateModuleNote(el.dataset.moduleNote, el.value);
+          saveState();
+        });
+      });
+
+      document.querySelectorAll("button[data-action='add-row']").forEach(btn => {
+        btn.addEventListener('click', () => {
+          const module = btn.dataset.module;
+          const rows = items.filter(i => i.module === module);
+          const baseDate = rows[0]?.date || today;
+          const nextOrder = Math.max(...rows.map(r => Number(r.order) || 0), 0) + 1;
+          items.push(normalizeCustomItem({
+            id: uid(),
+            module,
+            date: baseDate,
+            order: nextOrder,
+            area: rows[0]?.area || 'Área extra',
+            theme: 'Novo conteúdo extra',
+            subtopics: '',
+            priority: 'Prioridade 4',
+            opened: true
+          }));
+          saveState('Conteúdo extra adicionado.');
+          populateFilters();
+          populateTaskModuleOptions();
+          render();
+        });
+      });
+    }
+
+    function setImportPanelCollapsed(collapsed) {
+      const panel = document.getElementById("importPanel");
+      const btn = document.getElementById("toggleImportPanel");
+      if (!panel || !btn) return;
+      panel.classList.toggle("is-collapsed", !!collapsed);
+      btn.textContent = collapsed ? "Expandir" : "Minimizar";
+      btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      appSettings.importCollapsed = !!collapsed;
+      saveSettings();
+    }
+
+    function setOrganizerPanelCollapsed(collapsed) {
+      const panel = document.getElementById("organizerPanel");
+      const btn = document.getElementById("toggleOrganizerPanel");
+      if (!panel || !btn) return;
+      panel.classList.toggle("is-collapsed", !!collapsed);
+      btn.textContent = collapsed ? "Expandir painel" : "Minimizar painel";
+      btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      appSettings.organizerCollapsed = !!collapsed;
+      saveSettings();
+    }
+
+
+    function setHeaderCollapsed(collapsed) {
+      const full = document.getElementById("headerFullContent");
+      const compact = document.getElementById("compactHeaderBar");
+      const btn = document.getElementById("toggleHeaderPanel");
+      const header = document.querySelector("header");
+      if (!full || !compact) return;
+      full.classList.toggle("is-collapsed", !!collapsed);
+      compact.classList.toggle("hidden", !collapsed);
+      if (header) header.classList.toggle("is-compact", !!collapsed);
+      if (btn) {
+        btn.textContent = collapsed ? "Expandir cabeçalho" : "Minimizar cabeçalho";
+        btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      }
+      appSettings.headerCollapsed = !!collapsed;
+      saveSettings();
+    }
+
+    function setInitialPanelCollapsed(collapsed) {
+      const panel = document.getElementById("initialPanel");
+      const btn = document.getElementById("toggleInitialPanel");
+      if (!panel || !btn) return;
+      panel.classList.toggle("is-collapsed", !!collapsed);
+      btn.textContent = collapsed ? "Expandir parte inicial" : "Minimizar parte inicial";
+      btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      appSettings.initialPanelCollapsed = !!collapsed;
+      saveSettings();
+    }
+
+    function progressScoreList(list) {
+      const summary = summarizeProgress(list || []);
+      return summary.totalQuestions + summary.correctQuestions + (summary.doneTopics * 150) + (summary.filledTopics * 20) + (summary.count || 0);
+    }
+
+    async function refreshDataFromSources() {
+      const saveEl = document.getElementById("saveState");
+      if (saveEl) saveEl.textContent = "Atualizando dados...";
+      makeSafetySnapshot("antes de atualizar dados");
+
+      const candidates = [];
+      const embedded = readEmbeddedState();
+      if (embedded) candidates.push({ label: "dados embutidos neste HTML", state: embedded });
+
+      const bestLocal = findBestLocalStorageProgress();
+      if (bestLocal) candidates.push({ label: `armazenamento local: ${bestLocal.key}`, state: bestLocal.state });
+
+      try {
+        if (location && /^https?:|^file:/i.test(location.protocol)) {
+          const response = await fetch(location.href, { cache: "no-store" });
+          if (response && response.ok) {
+            const text = await response.text();
+            const fetchedState = parseImportedText(text);
+            if (fetchedState) candidates.push({ label: "arquivo mais recente recarregado", state: fetchedState });
+          }
+        }
+      } catch (err) {
+        // Em alguns navegadores, fetch de arquivo local não é permitido. O restante da atualização continua funcionando.
+      }
+
+      if (!candidates.length) {
+        if (saveEl) saveEl.textContent = "Nenhuma fonte nova encontrada para atualizar.";
+        const status = document.getElementById("importStatus");
+        if (status) status.textContent = "Atualizar: não encontrei dados novos neste navegador ou no arquivo atual.";
+        return;
+      }
+
+      const before = summarizeProgress(items);
+      const beforeTasks = calendarTasks.length;
+      let labels = [];
+      candidates.forEach(candidate => {
+        try {
+          const importedItems = stateToItems(candidate.state);
+          const importedTasks = stateToCalendarTasks(candidate.state);
+          if (!importedItems.length && !importedTasks.length) return;
+          const currentScore = progressScoreList(items);
+          const importedScore = progressScoreList(importedItems);
+          if (importedItems.length) items = mergeImportedItems([...items], importedItems);
+          if (importedTasks.length) calendarTasks = mergeCalendarTasks([...calendarTasks], importedTasks);
+          labels.push(`${candidate.label}${importedScore > currentScore ? " (com progresso maior)" : ""}`);
+        } catch (err) {}
+      });
+
+      saveState("Atualização concluída.");
+      populateFilters();
+      populateTaskModuleOptions();
+      render();
+      const after = summarizeProgress(items);
+      const status = document.getElementById("importStatus");
+      const sourceText = labels.length ? labels.join("; ") : "fontes locais verificadas";
+      const diff = after.totalQuestions - before.totalQuestions;
+      const taskDiff = calendarTasks.length - beforeTasks;
+      const diffText = diff > 0 || taskDiff > 0
+        ? ` Foram adicionadas/recuperadas ${diff > 0 ? diff : 0} questões feitas e ${taskDiff > 0 ? taskDiff : 0} tarefa(s) de agenda.`
+        : " Nenhum progresso maior foi encontrado; seus dados atuais foram preservados.";
+      if (status) status.textContent = `Atualização concluída a partir de: ${sourceText}.${diffText}`;
+      if (saveEl) saveEl.textContent = `Atualizado. Questões feitas: ${after.totalQuestions}.`;
+    }
+
+    function downloadBlob(filename, content, type="text/plain") {
+      const blob = new Blob([content], { type });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function downloadHtmlWithProgress(filename="cronograma_ses_pe_com_progresso_atual.html") {
+      const clone = document.documentElement.cloneNode(true);
+      clone.querySelectorAll("#embedded-state").forEach(el => el.remove());
+      const embedded = document.createElement("script");
+      embedded.type = "application/json";
+      embedded.id = "embedded-state";
+      embedded.textContent = JSON.stringify({ exportedAt: new Date().toISOString(), items, calendarTasks, settings: appSettings }, null, 2);
+      const mainScript = clone.querySelector('body script:not([type]), body script[type="text/javascript"]');
+      if (mainScript && mainScript.parentNode) mainScript.parentNode.insertBefore(embedded, mainScript);
+      else clone.querySelector("body").appendChild(embedded);
+      const html = "<!DOCTYPE html>\n" + clone.outerHTML;
+      downloadBlob(filename, html, "text/html;charset=utf-8");
+    }
+
+    function downloadMobileHtml() {
+      downloadHtmlWithProgress("cronograma_ses_pe_celular_tablet.html");
+    }
+
+    function restoreSafetyBackup() {
+      const raw = localStorage.getItem(safetyBackupKey);
+      if (!raw) {
+        alert("Ainda não existe backup de segurança neste navegador. Ele é criado automaticamente antes de importações ou limpeza de marcações.");
+        return;
+      }
+      try {
+        const data = JSON.parse(raw);
+        const summary = summarizeProgress(stateToItems(data));
+        const ok = confirm(`Último backup de segurança encontrado com ${summary.totalQuestions} questões feitas, ${summary.correctQuestions} corretas e ${summary.doneTopics} assuntos concluídos. Deseja restaurar esse backup agora?`);
+        if (!ok) return;
+        makeSafetySnapshot("antes de restaurar backup de segurança");
+        items = stateToItems(data);
+        calendarTasks = stateToCalendarTasks(data);
+        if (data.settings && typeof data.settings === "object") {
+          appSettings = { ...appSettings, ...data.settings };
+          saveSettings();
+        }
+        saveState("Backup de segurança restaurado.");
+        populateFilters();
+        populateTaskModuleOptions();
+        render();
+        document.getElementById("importStatus").textContent = "Backup de segurança restaurado com sucesso.";
+      } catch (err) {
+        alert("Não foi possível restaurar o backup de segurança: " + err.message);
+      }
+    }
+
+    function populateFilters() {
+      const areas = [...new Set(items.map(i => i.area))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      const modules = [...new Set(items.map(i => i.module))].sort((a,b)=>a.localeCompare(b,'pt-BR',{numeric:true}));
+      const areaSel = document.getElementById("filterArea");
+      const moduleSel = document.getElementById("filterModule");
+      const areaValue = areaSel.value;
+      const moduleValue = moduleSel.value;
+      areaSel.innerHTML = '<option value="">Todas as áreas</option>' + areas.map(a => `<option ${a===areaValue?'selected':''}>${a}</option>`).join("");
+      moduleSel.innerHTML = '<option value="">Todos os módulos</option>' + modules.map(m => `<option ${m===moduleValue?'selected':''}>${m}</option>`).join("");
+    }
+
+    ["search","filterArea","filterPriority","filterStatus","filterModule"].forEach(id => {
+      window.addEventListener("DOMContentLoaded", () => {
+        document.getElementById(id).addEventListener(id==="search" ? "input" : "change", render);
+      });
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      populateFilters();
+      populateTaskModuleOptions();
+      setImportPanelCollapsed(!!appSettings.importCollapsed);
+      setOrganizerPanelCollapsed(!!appSettings.organizerCollapsed);
+      setHeaderCollapsed(!!appSettings.headerCollapsed);
+      setInitialPanelCollapsed(!!appSettings.initialPanelCollapsed);
+      setCalendarPanelCollapsed(!!appSettings.calendarCollapsed);
+      const goalInput = document.getElementById("questionGoal");
+      if (goalInput) {
+        goalInput.value = appSettings.questionGoal || "";
+        goalInput.addEventListener("input", () => {
+          appSettings.questionGoal = parseNumber(goalInput.value) || "";
+          saveSettings();
+          render();
+        });
+      }
+      resetTaskForm();
+      render();
+
+      document.getElementById("toggleImportPanel").addEventListener("click", () => setImportPanelCollapsed(!document.getElementById("importPanel").classList.contains("is-collapsed")));
+      document.getElementById("toggleOrganizerPanel").addEventListener("click", () => setOrganizerPanelCollapsed(!document.getElementById("organizerPanel").classList.contains("is-collapsed")));
+      document.getElementById("toggleHeaderPanel")?.addEventListener("click", () => setHeaderCollapsed(true));
+      document.getElementById("toggleHeaderPanelCompact")?.addEventListener("click", () => setHeaderCollapsed(false));
+      document.getElementById("toggleInitialPanel")?.addEventListener("click", () => setInitialPanelCollapsed(!document.getElementById("initialPanel").classList.contains("is-collapsed")));
+      document.getElementById("toggleCalendarPanel")?.addEventListener("click", () => setCalendarPanelCollapsed(!document.getElementById("calendarPanel").classList.contains("is-collapsed")));
+      document.getElementById("calendarPrev")?.addEventListener("click", () => changeCalendarMonth(-1));
+      document.getElementById("calendarNext")?.addEventListener("click", () => changeCalendarMonth(1));
+      document.getElementById("calendarToday")?.addEventListener("click", () => selectCalendarDate(today));
+      document.getElementById("calendarMonthPicker")?.addEventListener("change", (event) => {
+        if (!event.target.value) return;
+        calendarDate = dateFromISO(event.target.value + "-01");
+        appSettings.calendarMonth = event.target.value;
+        saveSettings();
+        renderCalendar();
+      });
+      document.getElementById("newTaskForDay")?.addEventListener("click", () => resetTaskForm(true));
+      document.getElementById("cancelTaskEdit")?.addEventListener("click", () => resetTaskForm(true));
+      document.getElementById("taskForm")?.addEventListener("submit", saveTaskFromForm);
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") saveState("Salvo automaticamente.");
+      });
+      document.getElementById("refreshDataTop")?.addEventListener("click", refreshDataFromSources);
+      document.getElementById("refreshDataCompact")?.addEventListener("click", refreshDataFromSources);
+      document.querySelectorAll("[data-quick]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const mode = btn.dataset.quick;
+          if (mode === "clear") {
+            quickMode = "";
+            ["filterStatus","filterPriority","filterArea","filterModule"].forEach(id => document.getElementById(id).value = "");
+            document.getElementById("search").value = "";
+          } else if (mode === "late") {
+            quickMode = "";
+            document.getElementById("filterStatus").value = "Atrasado";
+          } else if (mode === "doing") {
+            quickMode = "";
+            document.getElementById("filterStatus").value = "Em andamento";
+          } else {
+            quickMode = quickMode === mode ? "" : mode;
+            document.getElementById("filterStatus").value = "";
+          }
+          appSettings.quickMode = quickMode;
+          saveSettings();
+          render();
+        });
+      });
+      document.getElementById("copyCurrentSummary").addEventListener("click", async () => {
+        const text = buildSummaryText(items.filter(matchesFilters));
+        try {
+          await navigator.clipboard.writeText(text);
+          document.getElementById("saveState").textContent = "Resumo copiado.";
+        } catch (err) {
+          prompt("Copie o resumo abaixo:", text);
+        }
+      });
+      document.getElementById("downloadHtmlWithProgress").addEventListener("click", () => downloadHtmlWithProgress());
+      document.getElementById("downloadMobileHtml").addEventListener("click", downloadMobileHtml);
+      document.getElementById("printCurrentView").addEventListener("click", () => window.print());
+      document.getElementById("restoreSafetyBackup").addEventListener("click", restoreSafetyBackup);
+
+      document.getElementById("expandAll").addEventListener("click", () => {
+        items.forEach(i => i.opened = true);
+        saveState();
+        render();
+      });
+      document.getElementById("collapseAll").addEventListener("click", () => {
+        items.forEach(i => i.opened = false);
+        saveState();
+        render();
+      });
+      document.getElementById("exportData").addEventListener("click", () => {
+        const payload = {
+          exportedAt: new Date().toISOString(),
+          items: items,
+          calendarTasks: calendarTasks,
+          settings: appSettings
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {type: "application/json"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "backup_cronograma_residencia_2026_v2.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+      document.getElementById("importFile").addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+          const text = await file.text();
+          const data = parseImportedText(text);
+          applyImportedState(data, file.name || "arquivo importado");
+        } catch (err) {
+          alert("Não foi possível importar esse arquivo: " + err.message);
+        } finally {
+          e.target.value = "";
+        }
+      });
+
+      document.getElementById("importPastedData").addEventListener("click", () => {
+        try {
+          const text = document.getElementById("importPaste").value;
+          const data = parseImportedText(text);
+          applyImportedState(data, "texto colado");
+        } catch (err) {
+          alert("Não foi possível importar o texto colado: " + err.message);
+        }
+      });
+
+      document.getElementById("clearPasteBox").addEventListener("click", () => {
+        document.getElementById("importPaste").value = "";
+        document.getElementById("importStatus").textContent = "Campo de importação limpo.";
+      });
+
+      document.getElementById("recoverLocalData").addEventListener("click", () => {
+        const best = findBestLocalStorageProgress();
+        if (!best) {
+          alert("Não encontrei dados antigos neste navegador. Se o progresso estava em outro navegador/dispositivo, exporte um backup .json lá ou cole aqui o valor salvo no localStorage.");
+          return;
+        }
+        applyImportedState(best.state, `armazenamento local: ${best.key}`);
+      });
+      document.getElementById("clearData").addEventListener("click", () => {
+        if (!confirm("Isso vai limpar suas marcações, anotações e tarefas da agenda salvas neste navegador para esta versão. Deseja continuar?")) return;
+        makeSafetySnapshot("antes de limpar marcações");
+        localStorage.removeItem(storageKey);
+        localStorage.removeItem(legacyStorageKey);
+        items = stateToItems({});
+        calendarTasks = [];
+        saveState("Marcações e agenda limpas.");
+        populateFilters();
+        populateTaskModuleOptions();
+        render();
+      });
+    });
+  </script>
+  <script>
+    if ("serviceWorker" in navigator && /^https?:$/i.test(location.protocol)) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
